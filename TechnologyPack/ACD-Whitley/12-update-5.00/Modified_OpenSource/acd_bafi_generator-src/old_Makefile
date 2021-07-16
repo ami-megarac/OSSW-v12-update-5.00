@@ -1,0 +1,45 @@
+#------- Comment/uncomment the following line to enable/disable debugging---------
+LIBRARY_NAME    = libacdbafi
+#---------------------- Change according to your files ----------------------------
+SRCCPP +=	libacdbafi.cpp
+
+LDFLAGS += -lpthread
+
+CFLAGS += -DBUILD_RAW
+CFLAGS += -DBUILD_JSON
+#CFLAGS += -I${SPXINC}/global
+#CFLAGS += -I${SPXINC}/dbgout
+#CFLAGS += -I${SPXINC}
+#CFLAGS += -I${SPXINC}/peci
+#CFLAGS += -I${SPXINC}/peci4
+#CFLAGS += -I${SPXINC}/checksum
+#CFLAGS += -I${SPXINC}/cjson2
+#CFLAGS += -DSPX_BMC_ACD
+CFLAGS +=  -Wno-missing-field-initializers
+CFLAGS +=  -Wno-unused-but-set-variable
+CFLAGS +=  -Wno-unused-parameter
+CFLAGS +=  -Wno-unused-function
+CFLAGS +=  -Wno-sign-compare
+CFLAGS +=  -Wno-unused-variable
+CFLAGS +=  -Wno-write-strings
+#CFLAGS += -std=gnu99
+
+CXXFLAGS += -std=c++11
+#CXXFLAGS += -std=gnu++1z
+#CXXFLAGS += -std=c++1z
+
+# Add the Corresponding library
+#LIBS+= -L${SPXLIB}/peci4 -lpeci4
+#LIBS+= -L${SPXLIB}/checksum -lchecksum
+#LIBS+= -L${SPXLIB}/libcjson2 -lcjson2
+#LIBS+= -L${SPXLIB}/libacdbafi -lacdbafi
+#LIBS+= -L$(SPXLIB)/dbgout -Wl,-rpath /usr/local/lib -ldbgout
+#LIBS+= -L${SPXLIB}/gpio -lgpio
+LIBS+= -lrt
+LIBS+= -ldl
+LIBS+= -lstdc++
+#LIBS+= -lstdc++fs
+
+include ${TOOLDIR}/rules/Rules.make.apps
+
+#----------------------------------------------------------------------------------------

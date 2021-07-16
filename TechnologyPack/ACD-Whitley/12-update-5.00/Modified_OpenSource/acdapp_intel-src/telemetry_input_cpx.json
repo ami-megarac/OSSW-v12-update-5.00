@@ -1,0 +1,35 @@
+{
+  "crash_data": {
+    "cpu": "icx2",
+    "Version": "release",
+    "ServiceName": "crashdump",
+    "DefaultState": "Enable",
+    "MCA": {
+      "_record_enable": false
+    },
+    "METADATA": {
+      "_record_enable": true
+    },
+    "PM_info": {
+      "_record_enable": false
+    },
+    "TOR": {
+      "_record_enable": false
+    },
+    "address_map": {
+      "_record_enable": false
+    },
+    "big_core": {
+      "_record_enable": false
+    },
+    "uncore": {
+      "_record_enable": true,
+      "_version": "0x01",
+      "pci": {
+        "header_info": ["reg_name", "bus", "device", "function", "offset", "size"],
+        "reg_list": [
+        ]
+      }
+    }
+  }
+}

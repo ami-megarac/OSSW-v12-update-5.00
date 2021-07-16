@@ -1,0 +1,18 @@
+{
+   "memoryMap": [
+      {
+         "addressBase": "0x00000000",
+         "addressLimit": "0xFFFF0000",
+         "bus": "0x98",
+         "device": "0x98",
+         "function": "0x98"
+      },
+      {
+         "addressBase": "0xFFFF0001",
+         "addressLimit": "0xFFFFFFFF",
+         "bus": "0x99",
+         "device": "0x99",
+         "function": "0x99"
+      }
+   ]
+}

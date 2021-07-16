@@ -1,0 +1,129 @@
+#!/bin/sh
+# /etc/init.d/remote_debug_init
+#
+# chkconfig: 2345 10 90
+#Runlevel : S = S63
+#Runlevel : 6 = K63
+# Restart the service on warm reboot
+#Runlevel : 9 = K63
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+test -f /usr/local/bin/RemoteDebugServer || exit 0
+
+#updating Version
+/usr/local/bin/RemoteDebugServer -v  &
+
+file_name="/etc/core_features"
+isFeatureEnable()
+{
+	if [ -f $file_name ]; then
+
+		target=$(grep $1 $file_name)
+		if [ $target == $1 ]; then
+			return 1
+		else	
+	  		return 0
+		fi
+	fi
+}
+
+load_driver()
+{
+#Unload CPLD Driver
+ 	isFeatureEnable CONFIG_SPX_FEATURE_CPLD_SUPPORT
+   	if [ $? == 1 ]; then
+		CPLD_DETECT=`lsmod | grep "cpld_hw" | awk ' $1 == "cpld_hw" {print $1}'`
+    	if [ "$CPLD_DETECT" == "cpld_hw" ]; then
+    		modprobe -r cpld_hw
+    	fi
+	fi
+#Unload AMI JTAG Driver	
+   	JTAG_HW_DETECT=`lsmod | grep "jtag_hw" | awk ' $1 == "jtag_hw" {print $1}'`
+   	if [ "$JTAG_HW_DETECT" == "jtag_hw" ]; then
+   		modprobe -r jtag_hw
+   	fi
+	
+	JTAG_DETECT=`lsmod | grep "jtag" | awk ' $1 == "jtag" {print $1}'`
+   	if [ "$JTAG_DETECT" == "jtag" ]; then
+   		modprobe -r jtag
+	fi
+#Load Intel JTAG Driver
+	modprobe jtag_intel_core
+	modprobe jtag_intel_aspeed
+}
+
+unload_driver()
+{
+#Unload Intel Jtag Driver
+	modprobe -r jtag_intel_aspeed
+	modprobe -r jtag_intel_core
+
+#Load AMI Jtag Driver	
+   	if [ -r /lib/modules/generic/misc/jtag.ko ] ; then
+   		modprobe jtag
+   	fi
+	if [ -r /lib/modules/generic/misc/jtag_hw.ko ] ; then
+   		modprobe jtag_hw
+   	fi	
+#Load CPLD driver
+   	isFeatureEnable CONFIG_SPX_FEATURE_CPLD_SUPPORT
+   	if [ $? == 1 ]; then
+   		if [ -r /lib/modules/generic/misc/cpld_hw.ko ] ; then
+			modprobe cpld_hw
+		fi
+	fi
+}
+
+case "$1" in
+start)
+	isFeatureEnable CONFIG_SPX_FEATURE_INTEL_REMOTE_DBG_AUTO_SUPPORT
+	if [ $? != 1 ]; then
+		echo "Auto Start is not Enable, Please use IPMI Cmd to start server."
+		echo "or" 
+		echo "Use: $0 manual"
+		exit 0
+	fi
+	load_driver
+	isFeatureEnable CONFIG_SPX_FEATURE_INTEL_TLS_AUTH
+	if [ $? != 1 ]; then
+    	/usr/local/bin/RemoteDebugServer -u &
+    else
+    	/usr/local/bin/RemoteDebugServer -k /conf/asd_ssl.pem &
+    fi
+    ;;
+manual)
+	load_driver
+	isFeatureEnable CONFIG_SPX_FEATURE_INTEL_TLS_AUTH
+	if [ $? != 1 ]; then
+    	/usr/local/bin/RemoteDebugServer -u &
+    else
+    	/usr/local/bin/RemoteDebugServer -k /conf/asd_ssl.pem &
+    fi
+
+    ;;
+stop)
+	killall RemoteDebugServer
+	rm /var/run/RemoteDebugServer.pid
+    unload_driver
+    ;;
+restart)
+	killall RemoteDebugServer
+	rm /var/run/RemoteDebugServer.pid
+    isFeatureEnable CONFIG_SPX_FEATURE_INTEL_TLS_AUTH
+	if [ $? != 1 ]; then
+    	/usr/local/bin/RemoteDebugServer -u &
+    else
+    	/usr/local/bin/RemoteDebugServer -k /conf/asd_ssl.pem &
+    fi
+
+    ;;
+
+*)
+    echo "Usage: $0 {start|manual|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0
+

@@ -1,0 +1,2092 @@
+{
+    "devicesMap": [
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0x0",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0x0",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0x0",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0x0",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0x0",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x0",
+            "device": "0x1",
+            "function": "0x0"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x0",
+            "device": "0x1",
+            "function": "0x1"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x0",
+            "device": "0x1",
+            "function": "0x2"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x0",
+            "device": "0x1",
+            "function": "0x3"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x0",
+            "device": "0x1",
+            "function": "0x4"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x0",
+            "device": "0x1",
+            "function": "0x5"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x0",
+            "device": "0x1",
+            "function": "0x6"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x0",
+            "device": "0x1",
+            "function": "0x7"
+        },
+        {
+            "description": "PECI Out-Of-Band Management Services Module (OOBMSM)",
+            "bus": "0x0",
+            "device": "0x2",
+            "function": "0x0"
+        },
+        {
+            "description": "PECI OOB-MSM - Discovery",
+            "bus": "0x0",
+            "device": "0x2",
+            "function": "0x1"
+        },
+        {
+            "description": "PECI OOB-MSM - Design for Debug",
+            "bus": "0x0",
+            "device": "0x2",
+            "function": "0x2"
+        },
+        {
+            "description": "CPU Complex Intel(R) Trace Hub",
+            "bus": "0x0",
+            "device": "0x2",
+            "function": "0x4"
+        },
+        {
+            "description": "Host Bridge",
+            "bus": "0x0",
+            "device": "0x3",
+            "function": "0x0"
+        },
+        {
+            "description": "MROM0",
+            "bus": "0x0",
+            "device": "0x11",
+            "function": "0x0"
+        },
+        {
+            "description": "MROM1",
+            "bus": "0x0",
+            "device": "0x11",
+            "function": "0x1"
+        },
+        {
+            "description": "Lewisburg SSATA Controller [AHCI mode]",
+            "bus": "0x0",
+            "device": "0x11",
+            "function": "0x5"
+        },
+        {
+            "description": "XHCI",
+            "bus": "0x0",
+            "device": "0x14",
+            "function": "0x0"
+        },
+        {
+            "description": "Thermal Subsystem (TS)",
+            "bus": "0x0",
+            "device": "0x14",
+            "function": "0x2"
+        },
+        {
+            "description": "Other Communications Device",
+            "bus": "0x0",
+            "device": "0x16",
+            "function": "0x0"
+        },
+        {
+            "description": "Other Communications Device",
+            "bus": "0x0",
+            "device": "0x16",
+            "function": "0x4"
+        },
+        {
+            "description": "Lewisburg SATA Controller [AHCI mode]",
+            "bus": "0x0",
+            "device": "0x17",
+            "function": "0x0"
+        },
+        {
+            "description": "PCI-to-PCI Bridge",
+            "bus": "0x0",
+            "device": "0x1c",
+            "function": "0x0"
+        },
+        {
+            "description": "PCI-to-PCI Bridge",
+            "bus": "0x0",
+            "device": "0x1c",
+            "function": "0x5"
+        },
+        {
+            "description": "ISA Bridge",
+            "bus": "0x0",
+            "device": "0x1f",
+            "function": "0x0"
+        },
+        {
+            "description": "Other Memory Controller",
+            "bus": "0x0",
+            "device": "0x1f",
+            "function": "0x2"
+        },
+        {
+            "description": "Lewisburg SMBus",
+            "bus": "0x0",
+            "device": "0x1f",
+            "function": "0x4"
+        },
+        {
+            "description": "SPI",
+            "bus": "0x0",
+            "device": "0x1f",
+            "function": "0x5"
+        },
+        {
+            "description": "I210 Gigabit Network Connection",
+            "bus": "0x1",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "AST1150 PCI-to-PCI Bridge",
+            "bus": "0x2",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "ASPEED Graphics Family",
+            "bus": "0x3",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0x16",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0x16",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0x16",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0x16",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0x16",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0x30",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0x30",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0x30",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0x30",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0x30",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0x4a",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0x4a",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0x4a",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0x4a",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0x4a",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Ice Lake Server PCI Express Root Port A",
+            "bus": "0x4a",
+            "device": "0x2",
+            "function": "0x0"
+        },
+        {
+            "description": "MT27500 Family [ConnectX-3]",
+            "bus": "0x4b",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0x64",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0x64",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0x64",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0x64",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0x64",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Ubox - Register Access Control Unit (RACU)",
+            "bus": "0x7e",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Ubox - Noncoherent Decode (NCDECS)",
+            "bus": "0x7e",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0x7e",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Ubox - Error Handling",
+            "bus": "0x7e",
+            "device": "0x0",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x2",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x2",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x2",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x2",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x3",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x3",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x3",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x3",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x4",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x4",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x4",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x4",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x5",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x5",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x5",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x6",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x6",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x6",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x7",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x7",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7e",
+            "device": "0x7",
+            "function": "0x2"
+        },
+        {
+            "description": "SMBus - SPD0",
+            "bus": "0x7e",
+            "device": "0xb",
+            "function": "0x0"
+        },
+        {
+            "description": "SMBus - SPD0",
+            "bus": "0x7e",
+            "device": "0xb",
+            "function": "0x1"
+        },
+        {
+            "description": "SMBus - VPP",
+            "bus": "0x7e",
+            "device": "0xb",
+            "function": "0x2"
+        },
+        {
+            "description": "Performance Counters",
+            "bus": "0x7e",
+            "device": "0xc",
+            "function": "0x0"
+        },
+        {
+            "description": "Performance Counters",
+            "bus": "0x7e",
+            "device": "0xd",
+            "function": "0x0"
+        },
+        {
+            "description": "Performance Counters",
+            "bus": "0x7e",
+            "device": "0xe",
+            "function": "0x0"
+        },
+        {
+            "description": "Performance Counters",
+            "bus": "0x7e",
+            "device": "0xf",
+            "function": "0x0"
+        },
+        {
+            "description": "Memory Controller",
+            "bus": "0x7e",
+            "device": "0x1a",
+            "function": "0x0"
+        },
+        {
+            "description": "Memory Controller",
+            "bus": "0x7e",
+            "device": "0x1b",
+            "function": "0x0"
+        },
+        {
+            "description": "Memory Controller",
+            "bus": "0x7e",
+            "device": "0x1c",
+            "function": "0x0"
+        },
+        {
+            "description": "Memory Controller",
+            "bus": "0x7e",
+            "device": "0x1d",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x0",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x0",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x0",
+            "function": "0x7"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x1",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x1",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x1",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x1",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x1",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x1",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x1",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x1",
+            "function": "0x7"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x2",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x2",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x2",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x2",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x2",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x2",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x2",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x2",
+            "function": "0x7"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x3",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x3",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x3",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x3",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x3",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x3",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x3",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x3",
+            "function": "0x7"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x4",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x4",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x4",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x4",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x4",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x4",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x4",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0x7f",
+            "device": "0x4",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xa",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xa",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xa",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xa",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xa",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xa",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xa",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xa",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xb",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xb",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xb",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xb",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xb",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xb",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xb",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xb",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xc",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xc",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xc",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xc",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xc",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xc",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xc",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xc",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xd",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xd",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xd",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xd",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xd",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xd",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xd",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xd",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xe",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xe",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xe",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xe",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xe",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xe",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xe",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0x7f",
+            "device": "0xe",
+            "function": "0x7"
+        },
+        {
+            "description": "SAD",
+            "bus": "0x7f",
+            "device": "0x1d",
+            "function": "0x0"
+        },
+        {
+            "description": "SAD",
+            "bus": "0x7f",
+            "device": "0x1d",
+            "function": "0x1"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0x7f",
+            "device": "0x1e",
+            "function": "0x0"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0x7f",
+            "device": "0x1e",
+            "function": "0x1"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0x7f",
+            "device": "0x1e",
+            "function": "0x2"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0x7f",
+            "device": "0x1e",
+            "function": "0x3"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0x7f",
+            "device": "0x1e",
+            "function": "0x4"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0x7f",
+            "device": "0x1e",
+            "function": "0x5"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0x7f",
+            "device": "0x1e",
+            "function": "0x6"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0x7f",
+            "device": "0x1e",
+            "function": "0x7"
+        },
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0x80",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0x80",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0x80",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0x80",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0x80",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x80",
+            "device": "0x1",
+            "function": "0x0"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x80",
+            "device": "0x1",
+            "function": "0x1"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x80",
+            "device": "0x1",
+            "function": "0x2"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x80",
+            "device": "0x1",
+            "function": "0x3"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x80",
+            "device": "0x1",
+            "function": "0x4"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x80",
+            "device": "0x1",
+            "function": "0x5"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x80",
+            "device": "0x1",
+            "function": "0x6"
+        },
+        {
+            "description": "Series DMA",
+            "bus": "0x80",
+            "device": "0x1",
+            "function": "0x7"
+        },
+        {
+            "description": "PECI Out-Of-Band Management Services Module (OOBMSM)",
+            "bus": "0x80",
+            "device": "0x2",
+            "function": "0x0"
+        },
+        {
+            "description": "PECI OOB-MSM - Discovery",
+            "bus": "0x80",
+            "device": "0x2",
+            "function": "0x1"
+        },
+        {
+            "description": "PECI OOB-MSM - Design for Debug",
+            "bus": "0x80",
+            "device": "0x2",
+            "function": "0x2"
+        },
+        {
+            "description": "CPU Complex Intel(R) Trace Hub",
+            "bus": "0x80",
+            "device": "0x2",
+            "function": "0x4"
+        },
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0x97",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0x97",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0x97",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0x97",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0x97",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0xb0",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0xb0",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0xb0",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0xb0",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0xb0",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0xc9",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0xc9",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0xc9",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0xc9",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0xc9",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Mesh2IIO MMAP/Intel VT-d",
+            "bus": "0xe2",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Series Mesh2IIO PMON",
+            "bus": "0xe2",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Series Mesh2IIO RAS",
+            "bus": "0xe2",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Series Mesh2IIO DFX",
+            "bus": "0xe2",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0xe2",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "Ubox - Register Access Control Unit (RACU)",
+            "bus": "0xfe",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "Ubox - Noncoherent Decode (NCDECS)",
+            "bus": "0xfe",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "Satellite IEH",
+            "bus": "0xfe",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "Ubox - Error Handling",
+            "bus": "0xfe",
+            "device": "0x0",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x2",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x2",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x2",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x2",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x3",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x3",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x3",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x3",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x4",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x4",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x4",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x4",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x5",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x5",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x5",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x6",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x6",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x6",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x7",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x7",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xfe",
+            "device": "0x7",
+            "function": "0x2"
+        },
+        {
+            "description": "SMBus - SPD0",
+            "bus": "0xfe",
+            "device": "0xb",
+            "function": "0x0"
+        },
+        {
+            "description": "SMBus - SPD0",
+            "bus": "0xfe",
+            "device": "0xb",
+            "function": "0x1"
+        },
+        {
+            "description": "SMBus - VPP",
+            "bus": "0xfe",
+            "device": "0xb",
+            "function": "0x2"
+        },
+        {
+            "description": "Performance Counters",
+            "bus": "0xfe",
+            "device": "0xc",
+            "function": "0x0"
+        },
+        {
+            "description": "Performance Counters",
+            "bus": "0xfe",
+            "device": "0xd",
+            "function": "0x0"
+        },
+        {
+            "description": "Performance Counters",
+            "bus": "0xfe",
+            "device": "0xe",
+            "function": "0x0"
+        },
+        {
+            "description": "Performance Counters",
+            "bus": "0xfe",
+            "device": "0xf",
+            "function": "0x0"
+        },
+        {
+            "description": "Memory Controller",
+            "bus": "0xfe",
+            "device": "0x1a",
+            "function": "0x0"
+        },
+        {
+            "description": "Memory Controller",
+            "bus": "0xfe",
+            "device": "0x1b",
+            "function": "0x0"
+        },
+        {
+            "description": "Memory Controller",
+            "bus": "0xfe",
+            "device": "0x1c",
+            "function": "0x0"
+        },
+        {
+            "description": "Memory Controller",
+            "bus": "0xfe",
+            "device": "0x1d",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x0",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x0",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x0",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x0",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x0",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x0",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x0",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x0",
+            "function": "0x7"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x1",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x1",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x1",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x1",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x1",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x1",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x1",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x1",
+            "function": "0x7"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x2",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x2",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x2",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x2",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x2",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x2",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x2",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x2",
+            "function": "0x7"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x3",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x3",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x3",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x3",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x3",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x3",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x3",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x3",
+            "function": "0x7"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x4",
+            "function": "0x0"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x4",
+            "function": "0x1"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x4",
+            "function": "0x2"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x4",
+            "function": "0x3"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x4",
+            "function": "0x4"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x4",
+            "function": "0x5"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x4",
+            "function": "0x6"
+        },
+        {
+            "description": "CHA",
+            "bus": "0xff",
+            "device": "0x4",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xa",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xa",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xa",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xa",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xa",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xa",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xa",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xa",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xb",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xb",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xb",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xb",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xb",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xb",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xb",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xb",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xc",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xc",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xc",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xc",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xc",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xc",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xc",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xc",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xd",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xd",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xd",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xd",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xd",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xd",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xd",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xd",
+            "function": "0x7"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xe",
+            "function": "0x0"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xe",
+            "function": "0x1"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xe",
+            "function": "0x2"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xe",
+            "function": "0x3"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xe",
+            "function": "0x4"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xe",
+            "function": "0x5"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xe",
+            "function": "0x6"
+        },
+        {
+            "description": "Other System Peripheral",
+            "bus": "0xff",
+            "device": "0xe",
+            "function": "0x7"
+        },
+        {
+            "description": "SAD",
+            "bus": "0xff",
+            "device": "0x1d",
+            "function": "0x0"
+        },
+        {
+            "description": "SAD",
+            "bus": "0xff",
+            "device": "0x1d",
+            "function": "0x1"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0xff",
+            "device": "0x1e",
+            "function": "0x0"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0xff",
+            "device": "0x1e",
+            "function": "0x1"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0xff",
+            "device": "0x1e",
+            "function": "0x2"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0xff",
+            "device": "0x1e",
+            "function": "0x3"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0xff",
+            "device": "0x1e",
+            "function": "0x4"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0xff",
+            "device": "0x1e",
+            "function": "0x5"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0xff",
+            "device": "0x1e",
+            "function": "0x6"
+        },
+        {
+            "description": "Power Control Unit (PCU)",
+            "bus": "0xff",
+            "device": "0x1e",
+            "function": "0x7"
+        }
+    ]
+}

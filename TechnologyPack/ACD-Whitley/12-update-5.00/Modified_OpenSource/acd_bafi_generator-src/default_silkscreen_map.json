@@ -1,0 +1,18 @@
+{
+  "MemoryLocationPcb": [
+    {
+      "Socket": 0,
+      "IMC": 0,
+      "Channel": 0,
+      "Slot": 0,
+      "SlotName": "J8J1"
+    },
+    {
+      "Socket": 0,
+      "IMC": 0,
+      "Channel": 0,
+      "Slot": 1,
+      "SlotName": "J8J2"
+    }
+  ]
+}

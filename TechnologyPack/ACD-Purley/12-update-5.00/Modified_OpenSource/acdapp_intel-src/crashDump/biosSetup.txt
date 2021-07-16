@@ -1,0 +1,1 @@
+Socket Configuration -> IIO Configuration -> IIO DFX Configuration -> EV DFX Features         [Enable] 
