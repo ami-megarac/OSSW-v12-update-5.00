@@ -1,0 +1,15 @@
+diff -Naur uboot/drivers/mtd/spi/spi-nor-ids.c uboot.new/drivers/mtd/spi/spi-nor-ids.c
+--- uboot/drivers/mtd/spi/spi-nor-ids.c	2020-05-29 18:14:29.240854947 +0800
++++ uboot.new/drivers/mtd/spi/spi-nor-ids.c	2020-05-29 18:15:59.126230979 +0800
+@@ -325,6 +325,11 @@
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+ 	},
+ 	{
++		INFO("w25q512jvfim", 0xef7020, 0, 64 * 1024, 1024,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
++	{
+ 		INFO("W25Q01JV", 0xef4021, 0, 64 * 1024, 2048,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)

@@ -1,0 +1,85 @@
+--- uboot_old/oem/ami/fmh/hrotcore.c	2020-12-19 01:31:30.996730031 +0530
++++ uboot_new/oem/ami/fmh/hrotcore.c	2020-12-19 03:55:58.489495506 +0530
+@@ -1,9 +1,12 @@
+ # include <common.h>
++# include <stdlib.h>
+ # include <config.h>
+ # include <command.h>
+ # include <flash.h>
+ # include "cmd.h"
+ # include <oem/ami/fmh/fmh.h>
++
++#include <environment.h>
+ # include "hrot_ifc.h"
+ #include "u-boot/sha256.h"
+ #include "u-boot/rsa.h"
+@@ -23,6 +26,7 @@
+ static sha256_context ctx;
+ static UINT32 boot_fmh_location,product_info_offset=0;
+ static char placeToHash[HASH_BLK_SIZE];
++static UINT32 totalsize=0;
+ 
+ void
+ hrot_start(){
+@@ -93,7 +97,9 @@
+                         sha256_update(&ctx, hash_data, hs_size);
+                         hash_start += hs_size;
+                 }
+-
++		totalsize=totalsize+hs_size;
++		env_set_hex("blob_length",totalsize);
++		env_save();
+ 	}
+         return 0;
+ }
+@@ -113,6 +119,9 @@
+         char    linebuf[16384] = {0}, linebuf1[1024] = {0};
+         void *buf=NULL, *buf1=NULL;
+         int ret =0;
++	char blob_data[65]= {0};
++	int i=0, retval=0;
++
+ 		int sig_length;
+ 		char identifier[8];
+ 		struct spi_flash *flash;
+@@ -126,7 +135,6 @@
+ 		}
+         sha256_finish(&ctx, output);
+ 
+-
+ 	   rc = spi_flash_read(flash,keyInfo, KEY_INFO_LENGTH*4, linebuf);
+         buf = (rc == ERR_OK) ? linebuf : (void*)keyInfo;
+ 
+@@ -136,7 +144,10 @@
+ 			printf("unable to find signature start identifier :( \n");
+ 			return -1;
+ 		}
+-	
++		
++		env_set_hex("blob_base",sigaddr);
++		env_save();
++
+ 		sigaddr +=sizeof(START_IDENTIFIER);
+ 		/* scan through hash area and find the proper hash for firmware image*/
+ 		while(product_info_offset > sigaddr )
+@@ -180,6 +191,20 @@
+                 printf("%s", key_data);
+                 printf("%s", sig);
+         }
++
++	for(i=0;i<size/2;i++)
++	{
++		retval=snprintf(blob_data+(i*2),3,"%02x",output[i]);
++		if(retval < 0 || retval >= 3)
++		{
++			return retval;
++		}
++		
++	}
++	env_set("blob_data",blob_data);
++	env_save();
++	env_set_ulong("blob_size",size);
++	env_save();
+         ret = rsa_get_pub_key_uboot_verify(key_data, sig, sig_length, output, size);
+         return ret;
+ }

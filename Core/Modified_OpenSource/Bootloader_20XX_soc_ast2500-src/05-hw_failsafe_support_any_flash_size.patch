@@ -1,0 +1,24 @@
+diff -Naur uboot/oem/ami/fmh/cmd_fmh.c uboot_new/oem/ami/fmh/cmd_fmh.c
+--- uboot/oem/ami/fmh/cmd_fmh.c	2021-03-12 16:42:03.712356832 +0530
++++ uboot_new/oem/ami/fmh/cmd_fmh.c	2021-03-13 03:05:00.550460101 +0530
+@@ -552,7 +552,9 @@
+         for (i=0;i<SectorCount;)
+         {
+                 #ifdef CONFIG_SPX_FEATURE_GLOBAL_DUAL_IMAGE_SUPPORT
++		#ifndef CONFIG_SPX_FEATURE_DEDICATED_SPI_FLASH_BANK
+                 if( (i*SectorSize) >= (2 * CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE) ) { break; }
++		#endif
+                 #else
+                 if( (i*SectorSize) >= CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE ) { break; }
+                 #endif
+@@ -1201,8 +1203,8 @@
+     {
+ #ifdef CONFIG_SPX_FEATURE_DEDICATED_SPI_FLASH_BANK
+ 	flash = flashspi[1];
+-	StartingSector = CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE;
+-	SectorCount=StartingSector+CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE;
++	StartingSector = flash->size;
++	SectorCount=StartingSector+flash->size;
+ 	startaddress=CE1_ADDRESS_SEGMENT;
+ 	StartingSector/=SectorSize;
+ 	SectorCount/=SectorSize;

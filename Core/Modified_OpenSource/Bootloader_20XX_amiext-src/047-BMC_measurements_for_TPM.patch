@@ -1,0 +1,34 @@
+diff -Naur uboot_old/oem/ami/fmh/cmd_fmh.c uboot_new/oem/ami/fmh/cmd_fmh.c
+--- uboot_old/oem/ami/fmh/cmd_fmh.c	2021-06-18 15:28:47.242083623 +0530
++++ uboot_new/oem/ami/fmh/cmd_fmh.c	2021-06-18 15:31:13.150501100 +0530
+@@ -1435,12 +1435,14 @@
+ 	}	/* For Scan */
+ 
+ #ifdef CONFIG_SPX_FEATURE_SECURE_BOOT_SUPPORT
+-	if(imagetoboot == IMAGE_2)
+ 	#ifdef CONFIG_SPX_FEATURE_CONTIGIOUS_SPI_MEMORY
+ 	{
+-	    image=imagetoboot;
+-	    offset=CONFIG_SPX_FEATURE_GLOBAL_UBOOT_ENV_START-CONFIG_SPX_FEATURE_GLOBAL_ERASE_BLOCK_SIZE-256;
+-	    retval = hrot_finish(startaddress,offset,image);
++	    if(imagetoboot == IMAGE_2)
++	    {
++		image=imagetoboot;
++		offset=CONFIG_SPX_FEATURE_GLOBAL_UBOOT_ENV_START-CONFIG_SPX_FEATURE_GLOBAL_ERASE_BLOCK_SIZE-256;
++		retval = hrot_finish(startaddress,offset,image);
++	    }
+ 	}
+ 	#else
+ 		retval = hrot_finish(startaddress);
+diff -Naur uboot_old/oem/ami/fmh/hrotcore.c uboot_new/oem/ami/fmh/hrotcore.c
+--- uboot_old/oem/ami/fmh/hrotcore.c	2021-06-18 15:28:47.286083747 +0530
++++ uboot_new/oem/ami/fmh/hrotcore.c	2021-06-18 15:29:00.378120999 +0530
+@@ -211,8 +211,6 @@
+ 	}
+ 	env_set("blob_data",blob_data);
+ 	env_save();
+-	env_set_ulong("blob_size",size);
+-	env_save();
+         ret = rsa_get_pub_key_uboot_verify(key_data, sig, sig_length, output, size);
+         return ret;
+ }

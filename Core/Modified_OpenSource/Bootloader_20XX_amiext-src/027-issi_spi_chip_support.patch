@@ -1,0 +1,24 @@
+diff -Naur uboot/drivers/mtd/spi/spi-nor-ids.c uboot.new/drivers/mtd/spi/spi-nor-ids.c
+--- uboot/drivers/mtd/spi/spi-nor-ids.c	2020-06-04 17:06:37.205436015 +0800
++++ uboot.new/drivers/mtd/spi/spi-nor-ids.c	2020-06-04 17:16:44.343257796 +0800
+@@ -132,9 +132,9 @@
+ 	{ INFO("is25lp128f",  0x9d6018, 0, 64 * 1024, 256,
+ 			SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ INFO("is25lp256",  0x9d6019, 0, 64 * 1024, 512,
+-			SECT_4K | SPI_NOR_DUAL_READ) },
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ INFO("is25lp256d",  0x9d6019, 0, 64 * 1024, 512,
+-			SECT_4K | SPI_NOR_DUAL_READ) },
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ INFO("is25wp032",  0x9d7016, 0, 64 * 1024,  64,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ INFO("is25wp064",  0x9d7017, 0, 64 * 1024, 128,
+@@ -143,6 +143,8 @@
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ INFO("is25wp512m",  0x9d601a, 0,64  * 1024, 1024,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ INFO("is25lp512m",  0x9d601a, 0,64  * 1024, 1024,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ #endif
+ #ifdef CONFIG_SPI_FLASH_MACRONIX	/* MACRONIX */
+ 	/* Macronix */

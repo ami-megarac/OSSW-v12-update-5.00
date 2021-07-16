@@ -1,0 +1,14 @@
+--- linux_old/drivers/mtd/spi-nor/spi-nor.c	2021-04-26 10:27:47.975227922 +0800
++++ linux/drivers/mtd/spi-nor/spi-nor.c	2021-04-26 11:03:55.347200367 +0800
+@@ -2526,6 +2526,11 @@
+                         SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+                         SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+         },
++        {
++                "w25q01jvsfim",INFO( 0xef7021, 0, 64 * 1024, 2048,
++                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++                        SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++        },
+ 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },

@@ -1,0 +1,25 @@
+--- uboot.orig/oem/ami/fmh/cmd_fmh.c	2020-05-04 17:04:32.281951318 +0800
++++ uboot/oem/ami/fmh/cmd_fmh.c	2020-05-04 14:38:12.826360327 +0800
+@@ -1438,10 +1438,12 @@
+ 		{
+ 			sprintf(AddrStr,"0x%lx",ExecuteAddr);
+ 			sprintf(INITRDAddrStr,"0x%lx",initrd_address);
++			sprintf(dtsaddrstr,"0x%lx",dtsaddr);
+ 			argv[0] = &Command[0];
+ 			argv[1] = &AddrStr[0];
+ 			argv[2] = &INITRDAddrStr[0];
+-			argv[3] = NULL;
++			argv[3] = &dtsaddrstr[0];
++			argv[4] = NULL;
+ 		}
+ 
+ 		/* If module is a ELF Executable */
+@@ -1469,7 +1471,7 @@
+ 			else
+ 			{
+ 				env_set("initrd_high","off");
+-				retval = do_bootm(NULL,0,3,argv);
++				retval = do_bootm(NULL,0,4,argv);
+ 			}
+ 			console_assign(stdout,"serial");
+ 			printf("Failed\n");

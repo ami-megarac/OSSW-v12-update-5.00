@@ -1,0 +1,83 @@
+/  {	
+	ami_drivers {
+
+   		compatible = "non_dt_devices";
+        	#address-cells = <0x1>;
+        	#size-cells = <0x1>;
+        	ranges;
+
+			ami_usbhub {	
+				interrupts = <5>;
+			};
+			
+			ami_videocap {
+				interrupts = <7>;
+			};
+
+			ami_reset {
+				interrupts = <8>;
+			};
+			
+			ami_bt 	{
+				interrupts = <8>;
+			};
+
+			ami_kcs 	{
+				interrupts = <8>;
+			};
+
+			ami_lpc {
+				interrupts = <8>;
+			};
+
+			ami_snoop 	{
+				interrupts = <8>;
+			};
+
+			ami_i2c {
+				interrupts = <12>;
+			};
+
+			ami_peci {
+				interrupts = <15>;
+			};
+		
+			ami_gpio {
+				interrupts = <20>;
+			};
+
+			ami_espi {
+				interrupts = <23>;
+			};
+
+			ami_wdt {
+				interrupts = <27>;
+			};
+
+			ami_pwmtach {
+				interrupts = <28>;
+			};
+			
+			ami_adc {
+				interrupts = <31>;
+			};
+		
+			ami_sgpio_master {
+		        	interrupts = <40>;
+            		};
+
+			ami_sgpio_slave {
+                		interrupts = <41>;
+            		};
+
+			ami_mctp {
+				interrupts = <42>;
+			};
+
+			ami_scu {
+				interrupts = <21>;
+			};
+		
+		};
+
+};

@@ -1,0 +1,35 @@
+--- aspeed-common.h	2020-06-07 21:49:00.426856703 -0400
++++ uboot/include/configs/aspeed-common.h	2020-06-07 21:49:17.662988543 -0400
+@@ -36,6 +36,21 @@
+ 
+ #define CONFIG_SYS_MALLOC_LEN		(32 << 20)
+ 
++#define   CONFIG_SYS_SDRAM_LEN                    CONFIG_SPX_FEATURE_GLOBAL_MEMORY_SIZE
++
++/* ECC Support */
++#ifdef CONFIG_SPX_FEATURE_GLOBAL_MEMORY_ECC_ENABLE
++#define CONFIG_SYS_SDRAM_SYS_USED      ((((CONFIG_SYS_SDRAM_LEN >> 20 ) / 9) << 3) << 20)
++#define CONFIG_SYS_SDRAM_ECC_USED      (CONFIG_SYS_SDRAM_SYS_USED  >> 3)
++#define CONFIG_SYS_ECC_MAX_ADDR        ((CONFIG_SYS_SDRAM_SYS_USED - 0x1)&0x3FF00000)
++#define CONFIG_DRAM_ECC
++#else
++#define CONFIG_SYS_ECC_MAX_ADDR (0)
++#define CONFIG_SYS_SDRAM_ECC_USED       (0)
++#define CONFIG_SYS_SDRAM_SYS_USED      (CONFIG_SYS_SDRAM_LEN - CONFIG_SYS_SDRAM_ECC_USED)
++#undef CONFIG_DRAM_ECC
++#endif
++
+ #ifdef CONFIG_SPX_FEATURE_MMC_BOOT
+ #define CONFIG_SD_BOOT_SELECTOR    1
+ #endif
+--- sysreset_ast.c	2020-06-07 21:53:32.204434445 -0400
++++ uboot/drivers/sysreset/sysreset_ast.c	2020-06-07 21:53:56.236575981 -0400
+@@ -14,7 +14,7 @@
+ static int ast_sysreset_request(struct udevice *dev, enum sysreset_t type)
+ {
+ 	struct udevice *wdt;
+-	u32 reset_mode;
++	u32 reset_mode=0;
+ 	int ret = uclass_first_device(UCLASS_WDT, &wdt);
+ 
+ 	if (ret)

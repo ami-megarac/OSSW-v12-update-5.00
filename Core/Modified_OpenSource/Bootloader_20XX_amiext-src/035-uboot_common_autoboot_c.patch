@@ -1,0 +1,35 @@
+--- uboot_old/common/autoboot.c	2020-10-07 13:09:43.543412736 +0530
++++ uboot/common/autoboot.c	2020-10-20 11:48:52.366549815 +0530
+@@ -212,20 +212,29 @@
+ {
+ 	int abort = 0;
+ 	unsigned long ts;
++	char c=0;
+ 
+ #ifdef CONFIG_MENUPROMPT
+ 	printf(CONFIG_MENUPROMPT);
+ #else
+-	printf("Hit any key to stop autoboot: %2d ", bootdelay);
++	printf("Hit any key (except Enter/Return) to stop autoboot: %2d ", bootdelay);
+ #endif
+ 
+ 	/*
+ 	 * Check if key already pressed
+ 	 */
+ 	if (tstc()) {	/* we got a key press	*/
+-		(void) getc();  /* consume input	*/
++		c= getc();  /* consume input	*/
+ 		puts("\b\b\b 0");
+-		abort = 1;	/* don't auto boot	*/
++		
++		/* Preventing enter/return key to stop autoboot. For IPV6 Conformance, 
++		 * the scripts will always be trying for command prompt(#) 
++		 * during reboots by giving enter to proceed further commands with the script.
++		 * During this if BMC is rebooting and if enter is issued from the script when trying for command prompt,
++		 * it will stop autoboot and will be stuck in uboot being unable to proceed further */
++
++	if(c!=0x0D)
++			abort = 1;	/* don't auto boot	*/
+ 	}
+ 
+ 	while ((bootdelay > 0) && (!abort)) {

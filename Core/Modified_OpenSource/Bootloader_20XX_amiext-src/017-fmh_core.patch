@@ -1,0 +1,41 @@
+--- uboot.old/oem/ami/fmh/fmhcore.c	2020-02-20 16:38:44.125045964 +0000
++++ uboot/oem/ami/fmh/fmhcore.c	2020-02-20 15:07:41.228786769 +0000
+@@ -181,12 +181,13 @@
+ 	FMH *fmh;
+ 	ALT_FMH *altfmh;
+ 	unsigned long FMH_Offset;
+-	MODULE_INFO *mod;
+ #if defined CONFIG_SPX_FEATURE_DEDICATED_SPI_FLASH_BANK
++	MODULE_INFO *mod;
+ 	unsigned long StartAddr = (unsigned long)SectorAddr;
+ 	unsigned long SecStartAddr = 0;
+ 	unsigned long i = 0;
+ #elif defined CONFIG_SPX_FEATURE_CONTIGIOUS_SPI_MEMORY
++	MODULE_INFO *mod;
+ 	unsigned long StartAddr = (unsigned long)SectorAddr;
+ #endif
+     int ret=0;
+@@ -207,7 +208,6 @@
+ 	if (fmh != NULL)
+ 		return fmh;
+        
+-	 mod = &(fmh->Module_Info);
+ 
+ 	/* If Normal FMH is not found, check for alternate FMH */
+ 	//flash_read((ulong)SectorAddr+SectorSize - sizeof(ALT_FMH),sizeof(ALT_FMH),(char *)&altfmh_buffer);
+@@ -222,6 +222,7 @@
+ 		return NULL;
+ 	
+ #if defined CONFIG_SPX_FEATURE_DEDICATED_SPI_FLASH_BANK
++	mod = &(fmh->Module_Info);
+ 	for(i = 0; i < CONFIG_SPX_FEATURE_SECONDARY_IMAGE_SPI; i++)
+ 		SecStartAddr += flash_info[i].size;
+ 
+@@ -237,6 +238,7 @@
+ 	}	
+ 	else
+ #elif defined CONFIG_SPX_FEATURE_CONTIGIOUS_SPI_MEMORY
++	mod = &(fmh->Module_Info);
+ 	if ((StartAddr - le32_to_host(mod->Module_Location)) >= CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE)
+ 	{
+ 		//flash_read((ulong)CONFIG_SYS_FLASH_BASE+CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE+FMH_Offset, sizeof(FMH), (char *)&fmh_buffer);

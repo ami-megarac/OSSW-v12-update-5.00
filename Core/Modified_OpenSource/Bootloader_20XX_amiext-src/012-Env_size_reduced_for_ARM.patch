@@ -1,0 +1,11 @@
+--- uboot/include/configs/evb_ast2500.h	2019-07-23 08:27:54.000000000 +0530
++++ uboot_new/include/configs/evb_ast2500.h	2020-01-29 18:06:39.743280239 +0530
+@@ -18,7 +18,7 @@
+ #define CONFIG_SYS_LOAD_ADDR		0x83000000
+ 
+ /* Environment */
+-#define CONFIG_ENV_SIZE			0x10000
++#define CONFIG_ENV_SIZE			(0x10000 - 4 )
+ #define CONFIG_ENV_OFFSET		0x90000
+ #define CONFIG_ENV_SECT_SIZE		(4 << 10)
+ 

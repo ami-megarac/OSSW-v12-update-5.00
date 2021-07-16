@@ -1,0 +1,103 @@
+diff -Naur linux/drivers/mtd/concat/mtd-concat.c linux_new/drivers/mtd/concat/mtd-concat.c
+--- linux/drivers/mtd/concat/mtd-concat.c	2021-03-12 16:39:23.719425371 +0530
++++ linux_new/drivers/mtd/concat/mtd-concat.c	2021-03-13 03:01:58.477222701 +0530
+@@ -16,6 +16,10 @@
+ #include <linux/of_platform.h>
+ #include <linux/slab.h>
+ 
++#ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
++extern unsigned char broken_spi_banks;
++#endif
++
+ /*
+  * struct of_mtd_concat - platform device driver data.
+  * @cmtd the final mtd_concat device
+@@ -93,7 +97,25 @@
+ 
+                info->devices[info->num_devices++] = mtd;
+        }
+-
++	
++#ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
++	broken_spi_banks=0;
++	if(strstr(boot_command_line,"imagebooted=1")) {
++		if(info->num_devices == 1) {
++			broken_spi_banks=2;//second spi not detected
++			printk("SPI 2 not Detected\n");
++		}
++	}
++	else if(strstr(boot_command_line,"imagebooted=2")) {
++		if(info->num_devices == 1) {
++			broken_spi_banks=1;//first spi not detected
++			printk("SPI 1 not Detected\n");
++		}
++	}
++	else {
++		broken_spi_banks=0;
++	}
++#endif
+        info->cmtd = mtd_concat_create(info->devices, info->num_devices,
+                                       dev_name(&pdev->dev));
+        if (!info->cmtd) {
+diff -Naur linux/drivers/mtd/parsers/spx-fmh.c linux_new/drivers/mtd/parsers/spx-fmh.c
+--- linux/drivers/mtd/parsers/spx-fmh.c	2021-03-12 16:39:23.719425371 +0530
++++ linux_new/drivers/mtd/parsers/spx-fmh.c	2021-03-13 03:01:32.577046600 +0530
+@@ -23,6 +23,7 @@
+ 
+ #ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
+ unsigned char broken_spi_banks = 0;// specify the number of broken SPI flash bank
++unsigned long spi_bank_size = 0;// specify the SPI flash bank size
+ #endif
+ 
+ 
+@@ -171,7 +172,7 @@
+ #endif
+         {
+             //img2_offset+=ractrends_mtd[i]->size;
+-            img2_offset+=CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE;
++            img2_offset+=FlashSize/2;
+         }
+     }
+ 
+@@ -207,6 +208,16 @@
+ 	//address computation for single image
+ 	endingsector=(unsigned long)div_u64(FlashSize,SectorSize);
+ #endif	
++#ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
++        if(broken_spi_banks == 1 || broken_spi_banks == 2)
++        {
++                spi_bank_size=FlashSize;
++        }
++        else
++        {
++                spi_bank_size=FlashSize/2;
++        }
++#endif
+ 	/* Create a MTD for full Flash */
+ #if 0 	/* DT Kernel creates "mtd0"  for full flash */
+ 	parts[PartCount].name = kstrndup("fullpart",16,GFP_KERNEL);
+@@ -326,10 +337,16 @@
+ 	}*/
+ 	if(0){
+ #if defined (CONFIG_SPX_FEATURE_GLOBAL_DUAL_IMAGE_SUPPORT)	
++#ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
++	if(strstr(boot_command_line,IMAGE_2)){
++                   flashstart=(mtd->size/2);
++        }
++#else
+ 	if(strstr(boot_command_line,IMAGE_2)){
+ 		   flashstart=CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE;
+ 	}
+ #endif
++#endif
+ }
+ 	PartCount = GetFMHPartitions(mtd,flashstart,mtd->size,mtd->erasesize,tmp_parts);
+ 
+@@ -367,6 +384,7 @@
+ 
+ #ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
+ EXPORT_SYMBOL(broken_spi_banks) ;
++EXPORT_SYMBOL(spi_bank_size);
+ #endif
+ 
+ MODULE_AUTHOR("American Megatrends International");

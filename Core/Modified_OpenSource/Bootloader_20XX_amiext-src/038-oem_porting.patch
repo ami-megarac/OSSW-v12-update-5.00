@@ -1,0 +1,91 @@
+diff -Naur uboot2/oem/ami/porting/ast2500evb_oem.c uboot/oem/ami/porting/ast2500evb_oem.c
+--- uboot2/oem/ami/porting/ast2500evb_oem.c	1969-12-31 19:00:00.000000000 -0500
++++ uboot/oem/ami/porting/ast2500evb_oem.c	2020-06-04 13:02:20.501051058 -0400
+@@ -0,0 +1,16 @@
++#include <common.h>
++#include <environment.h>
++#include <asm/io.h>
++#include <ast2500evb_oem.h>
++
++int misc_init_oem(void)
++{
++	/*Add OEM specific misc_init() registers changes Here*/
++	return 0;
++}
++
++int board_init_oem(void)
++{
++	/*Add OEM specific board_init() registers changes Here*/
++	return 0;
++}
+diff -Naur uboot2/oem/ami/porting/Makefile uboot/oem/ami/porting/Makefile
+--- uboot2/oem/ami/porting/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ uboot/oem/ami/porting/Makefile	2020-06-04 13:13:33.085695605 -0400
+@@ -0,0 +1,21 @@
++# (C) Copyright 2013 
++# American Megatrends Inc
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston,
++# MA 02111-1307 USA
++#
++
++
++obj-y	+= ast2500evb_oem.o
+diff -Naur uboot2/include/ast2500evb_oem.h uboot/include/ast2500evb_oem.h
+--- uboot2/include/ast2500evb_oem.h	1969-12-31 19:00:00.000000000 -0500
++++ uboot/include/ast2500evb_oem.h	2020-06-04 13:01:56.128910208 -0400
+@@ -0,0 +1,8 @@
++#ifndef __AST2500EVB_OEM_H__ 
++#define __AST2500EVB_OEM_H__
++
++int misc_init_oem (void);
++int board_init_oem (void);
++
++#endif /* __AST2500EVB_OEM_H */ 
++
+--- uboot2/oem/Makefile	2020-06-04 12:39:09.136593171 -0400
++++ uboot/oem/Makefile	2020-06-04 13:14:38.305568027 -0400
+@@ -18,3 +18,4 @@
+ ifeq ($(CONFIG_SPX_FEATURE_WRITE_MAC_TO_EEPROM_SUPPORT),"YES")
+ obj-y += ami/mac_eeprom/
+ endif
++obj-y += ami/porting/
+diff -Naur uboot/common/board_r.c uboot.new/common/board_r.c
+--- uboot/common/board_r.c      2020-11-03 13:14:39.629835252 -0500
++++ uboot.new/common/board_r.c  2020-11-03 13:14:23.577993438 -0500
+@@ -48,6 +48,7 @@
+ #include <linux/compiler.h>
+ #include <linux/err.h>
+ #include <efi_loader.h>
++#include <ast2500evb_oem.h>
+
+ DECLARE_GLOBAL_DATA_PTR;
+
+@@ -674,6 +675,7 @@
+        defined(CONFIG_SANDBOX)
+        board_init,     /* Setup chipselects */
+ #endif
++       board_init_oem,
+        /*
+         * TODO: printing of the clock inforamtion of the board is now
+         * implemented as part of bdinfo command. Currently only support for
+@@ -767,6 +769,7 @@
+ #ifdef CONFIG_MISC_INIT_R
+        misc_init_r,            /* miscellaneous platform-dependent init */
+ #endif
++        misc_init_oem,
+        INIT_FUNC_WATCHDOG_RESET
+ #ifdef CONFIG_CMD_KGDB
+        initr_kgdb,

@@ -1,0 +1,59 @@
+--- linux-5.4.99/drivers/mmc/host/sdhci-of-aspeed.c	2021-02-17 17:35:20.000000000 +0800
++++ linux/drivers/mmc/host/sdhci-of-aspeed.c	2021-03-12 11:06:36.637741730 +0800
+@@ -87,6 +87,44 @@
+ 	return sdhci_pltfm_clk_get_max_clock(host);
+ }
+ 
++static int aspeed_enable_sd1_port_8bit(void)
++{
++	struct device_node *nodeSCU;
++	void __iomem *scu_base = NULL;
++	u32 val;
++
++#define EN_SD2		0x02
++#define EN_SD1_8BIT	0x08
++	
++	nodeSCU = of_find_compatible_node(NULL, NULL, "aspeed,ast2500-scu");
++	if (!nodeSCU) {
++		printk("%s: Not AST2500 SOC\n", __FUNCTION__);
++		return -ENODEV;
++	}
++	
++	scu_base = of_iomap(nodeSCU, 0);
++	
++	if (!scu_base) {
++		printk("%s: ast2500 SCU, iomap returns NULL\n", __FUNCTION__);
++		return -ENODEV;
++	}
++	
++	/* Unlock the SCU */
++	iowrite32(0x1688A8A8, scu_base);
++	/* read scu multi-function pin ctrl5 */
++	val =ioread32(scu_base + 0x90);
++	val &= ~EN_SD2;
++	val |= EN_SD1_8BIT;
++	
++	iowrite32(val, scu_base + 0x90);
++
++	/* Lock SCU again */
++	iowrite32(0x0, scu_base);
++	iounmap(scu_base);
++	return 0;
++}
++
++
+ static void aspeed_sdhci_set_bus_width(struct sdhci_host *host, int width)
+ {
+ 	struct sdhci_pltfm_host *pltfm_priv;
+@@ -97,7 +135,10 @@
+ 	pltfm_priv = sdhci_priv(host);
+ 	aspeed_sdhci = sdhci_pltfm_priv(pltfm_priv);
+ 	aspeed_sdc = aspeed_sdhci->parent;
+-
++	
++	if (width == MMC_BUS_WIDTH_8)
++		aspeed_enable_sd1_port_8bit();
++	
+ 	/* Set/clear 8-bit mode */
+ 	aspeed_sdc_configure_8bit_mode(aspeed_sdc, aspeed_sdhci,
+ 				       width == MMC_BUS_WIDTH_8);

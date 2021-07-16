@@ -1,0 +1,89 @@
+diff -Naur uboot/oem/ami/standalone/nettest/mac.c uboot.new/oem/ami/standalone/nettest/mac.c
+--- uboot/oem/ami/standalone/nettest/mac.c	2020-03-27 16:19:50.649828170 +0800
++++ uboot.new/oem/ami/standalone/nettest/mac.c	2020-03-27 16:22:18.474684320 +0800
+@@ -800,6 +800,11 @@
+ 	Read_Reg_SCU_DD( 0x04 );//delay
+ 	Write_Reg_SCU_DD( 0x04, eng->reg.SCU_004_en );//Enable Engine
+ 	Read_Reg_SCU_DD( 0x04 );//delay
++  #ifdef MAC_040_def
++	Write_Reg_MAC_DD( eng, 0x40, eng->reg.MAC_040_new | MAC_040_def );
++  #else
++	Write_Reg_MAC_DD( eng, 0x40, eng->reg.MAC_040_new );
++  #endif
+ } // End void init_scu_macen (MAC_ENGINE *eng)
+ 
+ //------------------------------------------------------------
+diff -Naur uboot/oem/ami/standalone/nettest/mactest.c uboot.new/oem/ami/standalone/nettest/mactest.c
+--- uboot/oem/ami/standalone/nettest/mactest.c	2020-03-27 16:19:50.649828170 +0800
++++ uboot.new/oem/ami/standalone/nettest/mactest.c	2020-03-27 16:22:44.923410609 +0800
+@@ -100,11 +100,31 @@
+ 		// [Env]setup ASTChipType
+ 		//------------------------------
+ 		switch ( eng->reg.SCU_07c ) {
++			case 0x02010303 : sprintf( eng->env.ASTChipName, "[*]AST2400-A1"                    ); eng->env.ASTChipType = 5; break;//AST2400-A1
++			case 0x02000303 : sprintf( eng->env.ASTChipName, "[ ]AST2400-A0"                    ); eng->env.ASTChipType = 5; break;//AST2400-A0
++			case 0x02010103 : sprintf( eng->env.ASTChipName, "[*]AST1400-A1"                    ); eng->env.ASTChipType = 5; break;//AST1400-A1
++			case 0x02000003 : sprintf( eng->env.ASTChipName, "[ ]AST1400-A0"                    ); eng->env.ASTChipType = 5; break;//AST1400-A0
++
++			case 0x01010303 : sprintf( eng->env.ASTChipName, "[*]AST2300-A1"                    ); eng->env.ASTChipType = 4; break;//AST2300-A1
++			case 0x01010203 : sprintf( eng->env.ASTChipName, "[*]AST1050-A1"                    ); eng->env.ASTChipType = 4; break;//AST1050-A1
++			case 0x01010003 : sprintf( eng->env.ASTChipName, "[*]AST1300-A1"                    ); eng->env.ASTChipType = 4; break;//AST1300-A1
++			case 0x01000003 : sprintf( eng->env.ASTChipName, "[ ]AST2300-A0"                    ); eng->env.ASTChipType = 4; break;//AST2300-A0
++
++			case 0x00000102 : sprintf( eng->env.ASTChipName, "[*]AST2200-A1"                    ); eng->env.ASTChipType = 3; break;//AST2200-A1/A0
++
++			case 0x00000302 : sprintf( eng->env.ASTChipName, "[*]AST2100-A3"                    ); eng->env.ASTChipType = 2; break;//AST2100-A3/A2
++			case 0x00000301 : sprintf( eng->env.ASTChipName, "[ ]AST2100-A1"                    ); eng->env.ASTChipType = 2; break;//AST2100-A1
++			case 0x00000300 : sprintf( eng->env.ASTChipName, "[ ]AST2100-A0"                    ); eng->env.ASTChipType = 2; break;//AST2100-A0
++			case 0x00000202 : sprintf( eng->env.ASTChipName, "[*]AST2050/AST1100-A3, AST2150-A1"); eng->env.ASTChipType = 1; break;//AST2050/AST1100-A3/A2 AST2150-A1/A0
++			case 0x00000201 : sprintf( eng->env.ASTChipName, "[ ]AST2050/AST1100-A1"            ); eng->env.ASTChipType = 1; break;//AST2050/AST1100-A1
++			case 0x00000200 : sprintf( eng->env.ASTChipName, "[ ]AST2050/AST1100-A0"            ); eng->env.ASTChipType = 1; break;//AST2050/AST1100-A0
+ 			default:
+ 				sprintf( eng->env.ASTChipName, "[ ]" );
+ 				temp = ( eng->reg.SCU_07c ) & 0xff000000;
+ 				switch ( temp ) {
+ 					case 0x04000000 : eng->env.ASTChipType = 8; goto PASS_CHIP_ID;
++					case 0x02000000 : eng->env.ASTChipType = 5; goto PASS_CHIP_ID;
++					case 0x01000000 : eng->env.ASTChipType = 4; goto PASS_CHIP_ID;
+ 					default:
+ 						printf("Error Silicon Revision ID(SCU7C) %08x [%08x]!!!\n", eng->reg.SCU_07c, temp);
+ 				}
+diff -Naur uboot/oem/ami/standalone/nettest/phy.c uboot.new/oem/ami/standalone/nettest/phy.c
+--- uboot/oem/ami/standalone/nettest/phy.c	2020-03-27 16:19:50.673826119 +0800
++++ uboot.new/oem/ami/standalone/nettest/phy.c	2020-03-27 16:23:17.686924916 +0800
+@@ -115,7 +115,7 @@
+                 }
+ 
+   #ifdef Delay_PHYRd
+-            //    DELAY( Delay_PHYRd );
++                DELAY( Delay_PHYRd );
+   #endif
+                 read_value = Read_Reg_PHY_DD( eng, 0x64 ) & 0xffff;
+         }
+@@ -133,7 +133,7 @@
+                 }
+ 
+   #ifdef Delay_PHYRd
+-           //     DELAY( Delay_PHYRd );
++                DELAY( Delay_PHYRd );
+   #endif
+                 read_value = Read_Reg_PHY_DD( eng, 0x64 ) >> 16;
+         }
+@@ -227,7 +227,7 @@
+ #ifdef PHY_debug
+         printf("delay %d ms\n", dt);
+ #endif
+-       // DELAY( dt );
++        DELAY( dt );
+ 
+ #ifdef Realtek_debug
+ Write_Reg_GPIO_DD( 0x20, GPIO_20h_Value );
+@@ -272,7 +272,7 @@
+                 if ( !eng->run.TM_Burst ) PRINTF( FP_LOG, "[Clr]00: 0x%04x (%02d:%08x)\n", phy_read( eng, PHY_REG_BMCR ), eng->phy.Adr, eng->phy.PHY_BASE );
+         }
+ #ifdef Delay_PHYRst
+-   //     DELAY( Delay_PHYRst );
++        DELAY( Delay_PHYRst );
+ #endif
+ }
+ 

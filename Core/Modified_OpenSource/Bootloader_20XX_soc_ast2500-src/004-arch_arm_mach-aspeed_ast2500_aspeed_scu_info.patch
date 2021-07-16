@@ -1,0 +1,46 @@
+diff -Naur uboot2/arch/arm/mach-aspeed/ast2500/aspeed_scu_info.c uboot/arch/arm/mach-aspeed/ast2500/aspeed_scu_info.c
+--- uboot2/arch/arm/mach-aspeed/ast2500/aspeed_scu_info.c	2020-07-29 13:37:43.555625381 +0530
++++ uboot/arch/arm/mach-aspeed/ast2500/aspeed_scu_info.c	2020-08-04 11:14:41.422181591 +0530
+@@ -82,11 +82,15 @@
+ 
+ 	if (rest & SYS_WDT1_RESET) {
+ 		printf("RST : WDT1 \n");		
+-		writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_WDT1_RESET, ASPEED_SYS_RESET_CTRL);
++		/*     Commenting the write operation to prevent resetting of ASPEED_SYS_RESET_CTRL resister's flags/bits */
++		/*     If abrupt reboot happens, It will add the proper SEL logs after this fix*/
++	//	writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_WDT1_RESET, ASPEED_SYS_RESET_CTRL);
+ 	}
+ 	if (rest & SYS_WDT2_RESET) {
+ 		printf("RST : WDT2 - 2nd Boot \n");
+-		writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_WDT2_RESET, ASPEED_SYS_RESET_CTRL);
++		/*     Commenting the write operation to prevent resetting of ASPEED_SYS_RESET_CTRL resister's flags/bits */
++		/*     If abrupt reboot happens, It will add the proper SEL logs after this fix*/
++	//	writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_WDT2_RESET, ASPEED_SYS_RESET_CTRL);
+ 		if(readl(0x1e785030) & BIT(1))
+ 			puts("default boot\n");
+ 		else
+@@ -94,15 +98,21 @@
+ 	}
+ 	if (rest & SYS_WDT3_RESET) {
+ 		printf("RST : WDT3 - Boot\n");
+-		writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_WDT3_RESET, ASPEED_SYS_RESET_CTRL);
++		/*     Commenting the write operation to prevent resetting of ASPEED_SYS_RESET_CTRL resister's flags/bits */
++		/*     If abrupt reboot happens, It will add the proper SEL logs after this fix*/
++	//	writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_WDT3_RESET, ASPEED_SYS_RESET_CTRL);
+ 	}
+ 	if(rest & SYS_EXT_RESET) {
+ 		printf("RST : External \n");
+-		writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_EXT_RESET, ASPEED_SYS_RESET_CTRL);
++		/*     Commenting the write operation to prevent resetting of ASPEED_SYS_RESET_CTRL resister's flags/bits */
++		/*     If abrupt reboot happens, It will add the proper SEL logs after this fix*/
++	//	writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_EXT_RESET, ASPEED_SYS_RESET_CTRL);
+ 	}	
+ 	if (rest & SYS_PWR_RESET_FLAG) {
+ 		printf("RST : Power On \n");
+-		writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_PWR_RESET_FLAG, ASPEED_SYS_RESET_CTRL);
++		/*     Commenting the write operation to prevent resetting of ASPEED_SYS_RESET_CTRL resister's flags/bits */
++		/*     If abrupt reboot happens, It will add the proper SEL logs after this fix*/
++	//	writel(readl(ASPEED_SYS_RESET_CTRL) & ~SYS_PWR_RESET_FLAG, ASPEED_SYS_RESET_CTRL);
+ 	}
+ }
+ 

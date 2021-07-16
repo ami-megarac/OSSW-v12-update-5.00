@@ -1,0 +1,11 @@
+diff -Naur u-boot-2019.04/drivers/mtd/spi/spi-nor-ids.c u-boot.new/drivers/mtd/spi/spi-nor-ids.c
+--- u-boot-2019.04/drivers/mtd/spi/spi-nor-ids.c	2020-02-20 17:44:35.220318400 +0800
++++ u-boot.new/drivers/mtd/spi/spi-nor-ids.c	2020-02-20 17:50:47.939370295 +0800
+@@ -159,6 +159,7 @@
+ 	{ INFO("mx25u2033e",  0xc22532, 0, 64 * 1024,   4, SECT_4K) },
+ 	{ INFO("mx25u1635e",  0xc22535, 0, 64 * 1024,  32, SECT_4K) },
+ 	{ INFO("mx25l25735e",  0xc22019, 0, 64 * 1024,  512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ INFO("mx25l25735f",  0xc22019, 0, 64 * 1024,  512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ INFO("mx66l51235f",  0xc2201A, 0, 64 * 1024,  1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+ 	{ INFO("mx25l51245g",  0xc2201A, 0, 64 * 1024,  1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+ 	{ INFO("mx25u6435f",  0xc22537, 0, 64 * 1024, 128, SECT_4K) },

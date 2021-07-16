@@ -1,0 +1,78 @@
+--- linux-5.4.99/drivers/mtd/spi-nor/spi-nor.c	2021-02-17 17:35:20.000000000 +0800
++++ linux/drivers/mtd/spi-nor/spi-nor.c	2021-03-11 15:06:52.389218324 +0800
+@@ -2237,6 +2237,24 @@
+ 			SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+ 			.fixups = &gd25q256_fixups,
+ 	},
++	{
++		"gd25q256c", INFO(0xc84019, 0, 64 * 1024, 512,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++			.fixups = &gd25q256_fixups,
++	},
++	{
++		"gd25q256d", INFO(0xc84019, 0, 64 * 1024, 512,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++			.fixups = &gd25q256_fixups,
++	},
++	{
++		"gd25b256d", INFO(0xc84019, 0, 64 * 1024, 512,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++			.fixups = &gd25q256_fixups,
++	},
+ 
+ 	/* Intel/Numonyx -- xxxs33b */
+ 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+@@ -2267,6 +2285,14 @@
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25wp128",INFO(0x9d7018, 0, 64 * 1024, 256,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25wp512m", INFO( 0x9d601a, 0,64  * 1024, 1024,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25lp512m",INFO(0x9d601a, 0,64  * 1024, 1024,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25lp256d", INFO( 0x9d6019, 0, 64 * 1024, 512,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 
+ 	/* Macronix */
+ 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+@@ -2291,6 +2317,8 @@
+ 			 SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+ 			 .fixups = &mx25l25635_fixups },
+ 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
++	{ "mx25l25735e",INFO(0xc22019, 0, 64 * 1024,  512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) .fixups = &mx25l25635_fixups},
++	{ "mx25u25735f", INFO(0xc22539, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+ 	{ "mx25v8035f",  INFO(0xc22314, 0, 64 * 1024,  16,
+ 			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+@@ -2477,6 +2505,26 @@
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+ 	},
++	{
++		"w25q256fw",INFO( 0xef6019, 0, 64 * 1024, 512,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
++	{
++		"w25q512jv",INFO( 0xef4020, 0, 64 * 1024, 1024,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
++	{
++		"w25q512jvfim",INFO( 0xef7020, 0, 64 * 1024, 1024,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++	},
++        {
++                "w25q01jvsfiq",INFO( 0xef4021, 0, 64 * 1024, 2048,
++                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++                        SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++        },
+ 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },

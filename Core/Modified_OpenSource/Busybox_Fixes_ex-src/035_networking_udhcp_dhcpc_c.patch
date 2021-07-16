@@ -1,0 +1,12 @@
+diff -Naur old/networking/udhcp/dhcpc.c 35.new/networking/udhcp/dhcpc.c
+--- old/networking/udhcp/dhcpc.c	2021-01-21 16:52:40.255766179 +0800
++++ 35.new/networking/udhcp/dhcpc.c	2021-01-21 17:00:38.588982706 +0800
+@@ -1311,7 +1311,7 @@
+ 	llist_t *list_O = NULL;
+ 	llist_t *list_x = NULL;
+ 	int tryagain_timeout = 20;
+-	int discover_timeout = 3;
++	int discover_timeout = 1;
+ 	int discover_retries = 3;
+ #ifdef CONFIG_SPX_FEATURE_DCMI_VERSION_1_5_SUPPORT
+ 	int current_timeout  = 0;

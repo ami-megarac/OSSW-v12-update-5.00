@@ -1,0 +1,112 @@
+--- u-boot-2019.04/drivers/ram/aspeed/sdram_ast2500.c	2019-07-22 22:57:53.000000000 -0400
++++ uboot/drivers/ram/aspeed/sdram_ast2500.c	2020-06-04 17:47:28.580594359 -0400
+@@ -85,6 +85,16 @@
+ 	ulong clock_rate;
+ };
+ 
++#if 0
++static int spi_calibration()
++{
++	uint32_t golden_checksum = readl(0x1e620090);
++	writel(0,0x1e620080);
++	UN_USED(golden_checksum);	
++	return 0;
++}
++#endif
++
+ static int ast2500_sdrammc_init_phy(struct ast2500_ddr_phy *phy)
+ {
+ 	writel(0, &phy->phy[2]);
+@@ -192,6 +202,7 @@
+ 	return 0;
+ }
+ 
++#if 0
+ static size_t ast2500_sdrammc_get_vga_mem_size(struct dram_info *info)
+ {
+ 	size_t vga_mem_size_base = 8 * 1024 * 1024;
+@@ -200,6 +211,7 @@
+ 
+ 	return vga_mem_size_base << vga_hwconf;
+ }
++#endif
+ 
+ /*
+  * Find out RAM size and save it in dram_info
+@@ -208,6 +220,9 @@
+  */
+ static void ast2500_sdrammc_calc_size(struct dram_info *info)
+ {
++	info->info.base = CONFIG_SYS_SDRAM_BASE;
++	info->info.size = CONFIG_SYS_SDRAM_SYS_USED;
++#if 0
+ 	/* The controller supports 128/256/512/1024 MB ram */
+ 	size_t ram_size = SDRAM_MIN_SIZE;
+ 	const int write_test_offset = 0x100000;
+@@ -248,6 +263,7 @@
+ 			(SDRAM_CONF_CAP_MASK << SDRAM_CONF_CAP_SHIFT),
+ 			((cap_param & SDRAM_CONF_CAP_MASK)
+ 			 << SDRAM_CONF_CAP_SHIFT));
++#endif
+ }
+ 
+ static int ast2500_sdrammc_init_ddr4(struct dram_info *info)
+@@ -340,7 +356,9 @@
+ 
+ static int ast2500_sdrammc_probe(struct udevice *dev)
+ {
+-	struct reset_ctl reset_ctl;
++#if 0
++	struct reset_ctl reset_ctl; 
++#endif
+ 	struct dram_info *priv = (struct dram_info *)dev_get_priv(dev);
+ 	struct ast2500_sdrammc_regs *regs = priv->regs;
+ 	struct udevice *clk_dev;
+@@ -428,7 +446,7 @@
+ static int ast2500_sdrammc_ofdata_to_platdata(struct udevice *dev)
+ {
+ 	struct dram_info *priv = dev_get_priv(dev);
+-	int ret;
++//	int ret;	//unused
+ 
+ 	priv->regs = (void *)(uintptr_t)devfdt_get_addr_index(dev, 0);
+ 	priv->phy = (void *)(uintptr_t)devfdt_get_addr_index(dev, 1);
+--- u-boot-2019.04/arch/arm/mach-aspeed/board.c	2019-07-22 22:57:53.000000000 -0400
++++ uboot/arch/arm/mach-aspeed/board.c	2020-06-04 17:50:47.040774685 -0400
+@@ -68,6 +68,10 @@
+ 
+ int dram_init(void)
+ {
++	gd->ram_size = CONFIG_SYS_SDRAM_SYS_USED;
++	gd->ram_base = CONFIG_SYS_SDRAM_BASE;
++	return 0;
++#if 0
+ 	struct udevice *dev;
+ 	struct ram_info ram;
+ 	int ret;
+@@ -86,4 +90,5 @@
+ 
+ 	gd->ram_size = ram.size;
+ 	return 0;
++ #endif
+ }
+--- u-boot-2019.04/common/board_f.c	2019-07-22 22:57:53.000000000 -0400
++++ uboot/common/board_f.c	2020-06-04 15:49:48.791003444 -0400
+@@ -234,7 +234,8 @@
+ {
+ #if defined(CONFIG_NR_DRAM_BANKS) && defined(CONFIG_SYS_SDRAM_BASE)
+ 	gd->bd->bi_dram[0].start = CONFIG_SYS_SDRAM_BASE;
+-	gd->bd->bi_dram[0].size = get_effective_memsize();
++	//gd->bd->bi_dram[0].size = get_effective_memsize();
++	gd->bd->bi_dram[0].size = CONFIG_SYS_SDRAM_SYS_USED;
+ #endif
+ 
+ 	return 0;
+@@ -902,6 +903,7 @@
+ #if defined(CONFIG_VID) && !defined(CONFIG_SPL)
+ 	init_func_vid,
+ #endif
++
+ 	announce_dram_init,
+ 	dram_init,		/* configure available RAM banks */
+ #ifdef CONFIG_POST

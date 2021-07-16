@@ -1,0 +1,26 @@
+--- linux-5.4.99/drivers/net/ethernet/faraday/ftgmac100.c	2021-02-17 17:35:20.000000000 +0800
++++ linux/drivers/net/ethernet/faraday/ftgmac100.c	2021-03-11 15:52:23.612551321 +0800
+@@ -1875,8 +1875,22 @@
+ 	/* AST2400  doesn't have working HW checksum generation */
+ 	if (np && (of_device_is_compatible(np, "aspeed,ast2400-mac")))
+ 		netdev->hw_features &= ~NETIF_F_HW_CSUM;
++
++	/* AST2500 doesn't have working HW checksum generation for IPV6
++	 *     	 * but it works for IPV4, so disabling hw checksum and enabling
++	 *     	     	 * it for only IPV4.
++	 *     	     	 */
++	 if (np && (of_device_is_compatible(np, "aspeed,ast2500-mac")))
++	 {
++   		netdev->hw_features &= ~NETIF_F_HW_CSUM;
++    		netdev->hw_features |= NETIF_F_IP_CSUM;
++         }
++		   
++
+ 	if (np && of_get_property(np, "no-hw-checksum", NULL))
+-		netdev->hw_features &= ~(NETIF_F_HW_CSUM | NETIF_F_RXCSUM);
++		netdev->hw_features &= ~(NETIF_F_HW_CSUM |
++				 NETIF_F_RXCSUM
++					 | NETIF_F_IP_CSUM);
+ 	netdev->features |= netdev->hw_features;
+ 
+ 	/* register network device */

@@ -1,0 +1,19 @@
+diff -Naur uboot_old/oem/ami/fmh/hrotcore.c uboot_new/oem/ami/fmh/hrotcore.c
+--- uboot_old/oem/ami/fmh/hrotcore.c	2021-06-25 19:37:15.083044482 +0530
++++ uboot_new/oem/ami/fmh/hrotcore.c	2021-06-25 19:40:19.319593632 +0530
+@@ -99,7 +99,6 @@
+                 }
+ 		totalsize=totalsize+hs_size;
+ 		env_set_hex("blob_length",totalsize);
+-		env_save();
+ 	}
+         return 0;
+ }
+@@ -154,7 +153,6 @@
+ 		}
+ 		
+ 		env_set_hex("blob_base",sigaddr);
+-		env_save();
+ 
+ 		sigaddr +=sizeof(START_IDENTIFIER);
+ 		/* scan through hash area and find the proper hash for firmware image*/

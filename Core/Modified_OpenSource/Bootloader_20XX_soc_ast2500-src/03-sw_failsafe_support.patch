@@ -1,0 +1,20 @@
+--- uboot/oem/ami/fmh/ast_wdt.c	2020-03-25 00:53:08.300585805 +0530
++++ uboot_mod/oem/ami/fmh/ast_wdt.c	2020-03-24 23:01:10.309335068 +0530
+@@ -52,7 +52,7 @@
+ 
+        /* Reading the Watchdog Timeout event counter*/
+        *wdt_timeout_status = *((volatile unsigned long *)(WDT2_TIMEOUT_STAT_REG));
+-#ifdef CONFIG_SPX_FEATURE_DEDICATED_SPI_FLASH_BANK
++#ifdef CONFIG_SPX_FEATURE_GLOBAL_DUAL_IMAGE_SUPPORT
+        /*clear boot source to restore address mapping... */
+ #ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
+ 		if ((broken_spi_banks == 2) && (*wdt_timeout_status & WDT_CUR_BOOTSRC_MASK))
+@@ -60,7 +60,7 @@
+ 		else if (broken_spi_banks == 0)
+ #endif
+        {
+-           *((volatile unsigned long *)(WDT2_CLR_TIMEOUT_STAT_REG)) = 0x00000001 ; 
++           *((volatile unsigned long *)(WDT2_CLR_TIMEOUT_STAT_REG)) = 0x00000077 ; 
+        }
+ #endif
+ 

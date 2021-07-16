@@ -1,0 +1,120 @@
+--- uboot/oem/ami/fmh/cmd_fmh.c	2020-06-07 20:40:14.837090252 -0400
++++ uboot-sd/oem/ami/fmh/cmd_fmh.c	2020-06-07 20:41:52.397775355 -0400
+@@ -30,6 +30,7 @@
+ 
+ # define  KERNEL_LOADADDR	0xC00000
+ # define  KERNEL_FILE		"/boot/uImage"
++#define  KERNEL_DTB		"/boot/kernel.dtb"
+ 
+ 
+ # define AUTO_HIGH_VER_FW          	0x0
+@@ -950,6 +951,7 @@
+ #if 1
+ 	char Command[128] = "FMHEXECUTE";
+ 	char AddrStr[128] = "0xFFFFFFFF";
++	char AddrStr2[128] = "0xFFFFFFFF";
+ 	char bootargs[256] = {0};
+ 	char imagebooted[16] = {0};
+     char goldenside[16];
+@@ -1569,13 +1571,32 @@
+ 
+ 	if(do_ext4_load(NULL,0,5,argv) == 0)
+ 	{
+-		argv[0] = &Command[0];
+-		argv[1] = &AddrStr[0];
+-		argv[2] = NULL;
+-		retval = do_bootm(NULL,0,2,argv);
+-		console_assign(stdout,"serial");
+-		printf("Failed\n");
+-		return retval;
++		
++		retval = snprintf(AddrStr2,128,"0x%x",CONFIG_SYS_LOAD_DTB_ADDR);
++		if(retval < 0 || retval >= 128)
++		{
++			return retval;
++		}
++	
++		argv[0] = "ext4load";
++		argv[1] = "mmc";
++		argv[2] = &partition[0]; /* It is assumed that boot partition will be in slot 0 */
++		argv[3] = &AddrStr2[0];
++		argv[4] = KERNEL_DTB;
++		argv[5] = NULL;
++
++		if(do_ext4_load(NULL,0,5,argv) == 0)
++		{
++			argv[0] = &Command[0];
++			argv[1] = &AddrStr[0];
++			argv[2] = "-";
++			argv[3] = &AddrStr2[0];
++			argv[4] = NULL;
++			retval = do_bootm(NULL,0,4,argv);
++			console_assign(stdout,"serial");
++			printf("Failed\n");
++			return retval;
++		}
+ 	}
+ 	console_assign(stdout,"nulldev");
+ 	printf("Unable to locate %s\n",KERNEL_FILE);
+--- uboot/include/configs/evb_ast2500.h	2020-06-07 20:40:14.801089996 -0400
++++ uboot-sd/include/configs/evb_ast2500.h	2020-06-07 20:41:41.637700433 -0400
+@@ -16,6 +16,7 @@
+ 
+ /* Memory Info */
+ #define CONFIG_SYS_LOAD_ADDR		0x83000000
++#define CONFIG_SYS_LOAD_DTB_ADDR	0X84000000
+ 
+ /* Environment */
+ #define CONFIG_ENV_SIZE			(0x10000 - 4 )
+--- aspeed-common.h	2020-06-07 21:29:29.704063239 -0400
++++ uboot/include/configs/aspeed-common.h	2020-06-07 21:34:59.832062375 -0400
+@@ -36,6 +36,10 @@
+ 
+ #define CONFIG_SYS_MALLOC_LEN		(32 << 20)
+ 
++#ifdef CONFIG_SPX_FEATURE_MMC_BOOT
++#define CONFIG_SD_BOOT_SELECTOR    1
++#endif
++
+ /* BigPhys Area*/
+ #ifdef CONFIG_SPX_FEATURE_GLOBAL_FRAME_BUFFER_SUPPORT
+ #define CONFIG_BIGPHYSAREA          "8192"
+@@ -61,6 +65,18 @@
+ #define CONFIG_SYS_BOOTMAPSZ       (256 * 1024 * 1024)
+ #define CONFIG_SYS_BOOTM_LEN       (0x800000 * 2)
+ 
++
++#ifdef CONFIG_SPX_FEATURE_MMC_BOOT 
++#define CONFIG_EXTRA_ENV_SETTINGS \
++        "autoload=no\0"                 \
++        "verify=yes\0"  \
++        "spi_dma=no\0" \
++        "do_memtest=" __stringify(CONFIG_MEMTEST_ENABLE)        "\0" \
++        "bootselector=1\0" \
++        "recentlyprogfw=1\0" \
++	"sdbootselector=" __stringify(CONFIG_SD_BOOT_SELECTOR) "\0" \
++        ""
++#else
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	"autoload=no\0"			\
+ 	"verify=yes\0"	\
+@@ -69,6 +85,7 @@
+ 	"bootselector=1\0" \
+ 	"recentlyprogfw=1\0" \
+ 	""
++#endif
+ 
+ /*
+  * Ethernet related
+--- uboot-org/oem/ami/fmh/cmd_fmh.c	2020-06-09 16:50:48.720292270 -0400
++++ uboot/oem/ami/fmh/cmd_fmh.c	2020-06-09 16:51:18.928471531 -0400
+@@ -951,7 +951,9 @@
+ #if 1
+ 	char Command[128] = "FMHEXECUTE";
+ 	char AddrStr[128] = "0xFFFFFFFF";
++#if defined CONFIG_SPX_FEATURE_MMC_BOOT
+ 	char AddrStr2[128] = "0xFFFFFFFF";
++#endif
+ 	char bootargs[256] = {0};
+ 	char imagebooted[16] = {0};
+     char goldenside[16];

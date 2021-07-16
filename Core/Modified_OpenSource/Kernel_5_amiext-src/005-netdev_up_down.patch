@@ -1,0 +1,183 @@
+--- linux-5.4.99/drivers/net/bonding/bond_main.c	2021-02-17 17:35:20.000000000 +0800
++++ linux/drivers/net/bonding/bond_main.c	2021-03-11 11:34:52.576642535 +0800
+@@ -347,6 +347,16 @@
+ 	bond_for_each_slave(bond, slave, iter) {
+ 		if (slave->link == BOND_LINK_UP) {
+ 			if (!netif_carrier_ok(bond->dev)) {
++				if (rtnl_trylock())
++				{
++				      netdev_link_up(bond->dev);
++				      rtnl_unlock();
++				}
++				else
++				{
++				      netdev_link_up(bond->dev);
++				}
++
+ 				netif_carrier_on(bond->dev);
+ 				return 1;
+ 			}
+@@ -356,6 +366,16 @@
+ 
+ down:
+ 	if (netif_carrier_ok(bond->dev)) {
++        if (rtnl_trylock())
++	{
++	      netdev_link_down(bond->dev);
++              rtnl_unlock();
++        }
++        else
++        { 
++              netdev_link_down(bond->dev);
++	}
++
+ 		netif_carrier_off(bond->dev);
+ 		return 1;
+ 	}
+@@ -875,6 +895,15 @@
+ 		if (old_active)
+ 			bond_set_slave_inactive_flags(old_active,
+ 						      BOND_SLAVE_NOTIFY_NOW);
++                if (rtnl_trylock())
++		{
++		       netdev_link_down(bond->dev);
++		       rtnl_unlock();
++		}
++		else
++		{
++		       netdev_link_down(bond->dev);
++		}
+ 
+ 		if (new_active) {
+ 			bool should_notify_peers = false;
+@@ -894,6 +923,17 @@
+ 					bond_should_notify_peers(bond);
+ 			}
+ 
++
++			if (rtnl_trylock())
++			{
++			       netdev_link_up(bond->dev);
++			       rtnl_unlock();
++			}
++			else
++			{
++			       netdev_link_up(bond->dev);
++			}
++
+ 			call_netdevice_notifiers(NETDEV_BONDING_FAILOVER, bond->dev);
+ 			if (should_notify_peers) {
+ 				bond->send_peer_notif--;
+@@ -1163,6 +1203,14 @@
+ 					    struct bonding *bond)
+ {
+ 	if (bond_is_slave_inactive(slave)) {
++               /* Added by AMI:
++		* NC-SI packets should not dropped for inactive slave,
++		* so that link status will be updated properly for
++		* active back-up mode.
++		*/
++	        if(skb->protocol == __constant_htons(0x88F8))
++	            return false;
++
+ 		if (BOND_MODE(bond) == BOND_MODE_ALB &&
+ 		    skb->pkt_type != PACKET_BROADCAST &&
+ 		    skb->pkt_type != PACKET_MULTICAST)
+--- linux-5.4.99/drivers/net/phy/phy.c	2021-02-17 17:35:20.000000000 +0800
++++ linux/drivers/net/phy/phy.c	2021-03-11 11:35:44.374397489 +0800
+@@ -16,6 +16,7 @@
+ #include <linux/delay.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
++#include <linux/rtnetlink.h>
+ #include <linux/skbuff.h>
+ #include <linux/mm.h>
+ #include <linux/module.h>
+@@ -102,6 +103,23 @@
+ 	} else	{
+ 		netdev_info(phydev->attached_dev, "Link is Down\n");
+ 	}
++
++        if (rtnl_trylock())
++	{
++	     if (phydev->link)
++	           netdev_link_up(phydev->attached_dev);
++	     else
++	           netdev_link_down(phydev->attached_dev);
++	     rtnl_unlock();
++	}
++	else
++	{
++	     if (phydev->link)
++	           netdev_link_up(phydev->attached_dev);
++	     else
++	           netdev_link_down(phydev->attached_dev);
++	}
++
+ }
+ EXPORT_SYMBOL(phy_print_status);
+ 
+--- linux-5.4.99/include/linux/netdevice.h	2021-02-17 17:35:20.000000000 +0800
++++ linux/include/linux/netdevice.h	2021-03-11 11:36:56.471272640 +0800
+@@ -2489,6 +2489,9 @@
+ 	NETDEV_CVLAN_FILTER_DROP_INFO,
+ 	NETDEV_SVLAN_FILTER_PUSH_INFO,
+ 	NETDEV_SVLAN_FILTER_DROP_INFO,
++        NETDEV_LINK_UP,         /* Link up Notifier   */
++        NETDEV_LINK_DOWN    /* Link down Notifier */
++
+ };
+ const char *netdev_cmd_to_name(enum netdev_cmd cmd);
+ 
+@@ -4233,6 +4236,9 @@
+ void netdev_state_change(struct net_device *dev);
+ void netdev_notify_peers(struct net_device *dev);
+ void netdev_features_change(struct net_device *dev);
++void netdev_link_up(struct net_device *dev);
++void netdev_link_down(struct net_device *dev);
++
+ /* Load a device via the kmod */
+ void dev_load(struct net *net, const char *name);
+ struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
+--- linux-5.4.99/net/core/dev.c	2021-02-17 17:35:20.000000000 +0800
++++ linux/net/core/dev.c	2021-03-11 11:38:49.882357208 +0800
+@@ -1514,7 +1514,7 @@
+ 	N(UDP_TUNNEL_DROP_INFO) N(CHANGE_TX_QUEUE_LEN)
+ 	N(CVLAN_FILTER_PUSH_INFO) N(CVLAN_FILTER_DROP_INFO)
+ 	N(SVLAN_FILTER_PUSH_INFO) N(SVLAN_FILTER_DROP_INFO)
+-	N(PRE_CHANGEADDR)
++	N(PRE_CHANGEADDR) N(LINK_UP) N(LINK_DOWN)
+ 	}
+ #undef N
+ 	return "UNKNOWN_NETDEV_EVENT";
+@@ -1970,9 +1970,9 @@
+ 
+ 		if (skb_network_header(skb2) < skb2->data ||
+ 		    skb_network_header(skb2) > skb_tail_pointer(skb2)) {
+-			net_crit_ratelimited("protocol %04x is buggy, dev %s\n",
+-					     ntohs(skb2->protocol),
+-					     dev->name);
++			//net_crit_ratelimited("protocol %04x is buggy, dev %s\n",
++			//		     ntohs(skb2->protocol),
++			//		     dev->name);
+ 			skb_reset_network_header(skb2);
+ 		}
+ 
+@@ -10252,4 +10252,17 @@
+ 	return rc;
+ }
+ 
++void netdev_link_up(struct net_device *dev)
++{
++	   call_netdevice_notifiers(NETDEV_LINK_UP, dev);
++}
++EXPORT_SYMBOL(netdev_link_up);
++
++void netdev_link_down(struct net_device *dev)
++{
++	   call_netdevice_notifiers(NETDEV_LINK_DOWN, dev);
++}
++EXPORT_SYMBOL(netdev_link_down);
++
++
+ subsys_initcall(net_dev_init);

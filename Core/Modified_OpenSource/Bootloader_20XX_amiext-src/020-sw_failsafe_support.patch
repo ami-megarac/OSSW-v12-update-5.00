@@ -1,0 +1,39 @@
+--- uboot/oem/ami/fmh/cmd_fmh.c	2020-03-25 00:52:50.092539056 +0530
++++ uboot_new/oem/ami/fmh/cmd_fmh.c	2020-03-24 22:57:28.300393445 +0530
+@@ -241,8 +241,7 @@
+         hang();
+     }
+ 
+-    //flashsize = flash->mtd.size;
+-    flashsize = CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE;
++    flashsize = flash->size;
+     SectorSize = 0x10000; //flash->erase_size;//0x10000;//flash->sector_size;
+     SectorCount = flashsize/SectorSize;
+    printf("Flash size 0x%lx Sector size 0x%lx SectorCount 0x%lx\n",flashsize,SectorSize,SectorCount);
+@@ -1220,7 +1219,7 @@
+ 
+ 		if (le16_to_host(mod->Module_Type) == MODULE_FPGA)
+ 		{
+-			dtsaddr = le32_to_host(mod->Module_Location);
++			dtsaddr = startaddress + le32_to_host(startaddress + mod->Module_Location);
+ 		}
+ 
+ 
+@@ -1243,7 +1242,7 @@
+ 								le32_to_host(mod->Module_Size),
+ 								startaddress+le32_to_host(mod->Module_Location),
+ 								le32_to_host(mod->Module_Load_Address));
+-					ret = spi_flash_read(flash, le32_to_host(mod->Module_Location), le32_to_host(mod->Module_Size), (void *)le32_to_host(mod->Module_Load_Address));
++					ret = spi_flash_read(flash, startaddress + le32_to_host(mod->Module_Location), le32_to_host(mod->Module_Size), (void *)le32_to_host(mod->Module_Load_Address));
+ 					if(ret)
+ 					{
+ 						puts("Error in reading SPI\n");
+@@ -1254,7 +1253,7 @@
+ 				{
+ 					if(rootisinitrd == 1)
+ 					{
+-						initrd_address =  le32_to_host(mod->Module_Load_Address);
++						initrd_address = startaddress + le32_to_host(mod->Module_Load_Address);
+ 						printf("INITRD Image moved to 0x%lx\n",initrd_address);
+ 					}
+ 				}

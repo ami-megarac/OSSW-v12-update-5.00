@@ -1,0 +1,14 @@
+--- linux_old/drivers/mtd/spi-nor/spi-nor.c	2021-05-18 13:57:33.278660261 +0800
++++ linux/drivers/mtd/spi-nor/spi-nor.c	2021-05-18 15:13:56.949293065 +0800
+@@ -2255,6 +2255,11 @@
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+ 			.fixups = &gd25q256_fixups,
+ 	},
++        {
++                "gd25b512m", INFO(0xc8471a, 0, 64 * 1024, 1024,
++                        SECT_4K | SPI_NOR_QUAD_READ |
++                        SPI_NOR_4B_OPCODES | SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
++        },
+ 
+ 	/* Intel/Numonyx -- xxxs33b */
+ 	{ "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },

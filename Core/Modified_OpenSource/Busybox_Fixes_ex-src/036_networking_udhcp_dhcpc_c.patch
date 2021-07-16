@@ -1,0 +1,21 @@
+diff -Naur 35.new/networking/udhcp/dhcpc.c 36.new/networking/udhcp/dhcpc.c
+--- 35.new/networking/udhcp/dhcpc.c	2021-01-21 17:00:38.588982706 +0800
++++ 36.new/networking/udhcp/dhcpc.c	2021-01-21 17:06:19.393837419 +0800
+@@ -1310,7 +1310,7 @@
+ 	void *clientid_mac_ptr;
+ 	llist_t *list_O = NULL;
+ 	llist_t *list_x = NULL;
+-	int tryagain_timeout = 20;
++	int tryagain_timeout = 3;
+ 	int discover_timeout = 1;
+ 	int discover_retries = 3;
+ #ifdef CONFIG_SPX_FEATURE_DCMI_VERSION_1_5_SUPPORT
+@@ -1618,7 +1618,7 @@
+ 					goto ret;
+ 				}
+ 				/* wait before trying again */
+-				timeout = tryagain_timeout+client_config.interval *10;
++				timeout = tryagain_timeout;
+ #ifdef CONFIG_SPX_FEATURE_DCMI_VERSION_1_5_SUPPORT 
+ 				/* Reset the Current timeout value*/
+ 				if(timing1 != 0)

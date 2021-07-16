@@ -1,0 +1,33 @@
+--- uboot.orig/arch/arm/mach-aspeed/board.c	2020-05-04 11:17:02.764013112 +0800
++++ uboot/arch/arm/mach-aspeed/board.c	2020-05-04 11:12:19.332417894 +0800
+@@ -55,14 +55,25 @@
+ int board_init(void)
+ {
+ 	struct udevice *dev;
++	int i;
++	int ret;
+ 
+ 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + 0x100;
+ 
+-	uclass_first_device_check(UCLASS_MISC, &dev);
+-#if 0	
+-	if (!dev) 
+-		printf("No MISC found.\n");
+-#endif
++	/*
++	 * Loop over all MISC uclass drivers to call the comphy code
++	 * and init all CP110 devices enabled in the DT
++	 */
++	i = 0;
++	while (1) {
++		/* Call the comphy code via the MISC uclass driver */
++		ret = uclass_get_device(UCLASS_MISC, i++, &dev);
++
++		/* We're done, once no further CP110 device is found */
++		if (ret)
++			break;
++	}
++
+ 	return 0;
+ }
+ 

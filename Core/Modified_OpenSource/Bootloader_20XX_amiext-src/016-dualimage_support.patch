@@ -1,0 +1,765 @@
+diff -Naur uboot.old/oem/ami/fmh/ast_hw.h uboot/oem/ami/fmh/ast_hw.h
+--- uboot.old/oem/ami/fmh/ast_hw.h	1969-12-31 19:00:00.000000000 -0500
++++ uboot/oem/ami/fmh/ast_hw.h	2020-02-17 20:20:10.996762000 -0500
+@@ -0,0 +1,13 @@
++#ifndef _AST_HW_H_
++#define _AST_HW_H_
++
++#include <config.h>
++
++/* U-Boot does not use MMU. So no mapping */
++#define IO_ADDRESS(x)	(x)
++#define MEM_ADDRESS(x)  (x)
++
++#include "hwmap.h"
++#include "hwreg.h"
++#include "hwdef.h"
++#endif
+diff -Naur uboot.old/oem/ami/fmh/ast_wdt.c uboot/oem/ami/fmh/ast_wdt.c
+--- uboot.old/oem/ami/fmh/ast_wdt.c	1969-12-31 19:00:00.000000000 -0500
++++ uboot/oem/ami/fmh/ast_wdt.c	2020-02-17 20:20:10.996762000 -0500
+@@ -0,0 +1,102 @@
++
++/*****************************************************************
++ *****************************************************************
++ ***                                                            **
++ ***    (C)Copyright 2002-2003, American Megatrends Inc.        **
++ ***                                                            **
++ ***            All Rights Reserved.                            **
++ ***                                                            **
++ ***        6145-F, Northbelt Parkway, Norcross,                **
++ ***                                                            **
++ ***        Georgia - 30071, USA. Phone-(770)-246-8600.         **
++ ***                                                            **
++ *****************************************************************
++ *****************************************************************
++
++ *******************************************************************/
++#if defined(CONFIG_SPX_FEATURE_FAIL_SAFE_BOOTING) || defined(CONFIG_SPX_FEATURE_BMC_FIRMWARE_AUTO_RECOVERY)
++#include "soc_hw.h"
++#include <common.h>
++
++#define WDT_ENABLE              0x01
++#define WDT_TIMEOUT             0x11E1A300              // 5 Minutes (300 secs * 1MHz)
++#define WDT_TRIGGER             0x00004755              // Trigger Passcode
++#define WDT_CLOCK               0x10                    // 1MHz Clock for WDT
++#define WDT_RESET_SYSTEM        0x02                    // Enable System-Reset-On-Timeout
++#define WDT_CLR_EVT_COUNTER     0x76                    // Clear the Timeout Counter & Boot Source code
++#define WDT2_SECOND_BOOT_CODE   0x80                    // Enable Second Boot Code upon reset
++#define WDT_CUR_BOOTSRC_MASK    0x00000002
++
++#ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT 
++extern unsigned char broken_spi_banks;// specify the number of broken SPI flash bank
++#endif
++
++int Enable_watchdog(unsigned long *wdt_timeout_status)
++{
++       /* Setting the Watchdog Timer to prevent dead locks during booting */
++       /* Disable the Watchdog Timer */
++       *((volatile unsigned long *)(WDT2_CONTROL_REG)) &= ~(WDT_RESET_SYSTEM | WDT_ENABLE);
++
++       /* Set the Timeout value to max possible 5 Minutes */
++       *((volatile unsigned long *)(WDT2_RELOAD_REG)) = WDT_TIMEOUT;
++
++       /* Set the Trigger value to restart Timer freshly */
++       *((volatile unsigned long *)(WDT2_CNT_RESTART_REG)) = WDT_TRIGGER;
++
++       /* Set the Watchdog clock to 1MHz clock */
++       *((volatile unsigned long *)(WDT2_CONTROL_REG)) |= (WDT_CLOCK);
++
++       /* Reading the Watchdog Timeout event counter*/
++       *wdt_timeout_status = *((volatile unsigned long *)(WDT2_TIMEOUT_STAT_REG));
++#ifdef CONFIG_SPX_FEATURE_DEDICATED_SPI_FLASH_BANK
++       /*clear boot source to restore address mapping... */
++#ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
++		if ((broken_spi_banks == 2) && (*wdt_timeout_status & WDT_CUR_BOOTSRC_MASK))
++			broken_spi_banks = 1;
++		else if (broken_spi_banks == 0)
++#endif
++       {
++           *((volatile unsigned long *)(WDT2_CLR_TIMEOUT_STAT_REG)) = 0x00000001 ; 
++       }
++#endif
++
++#ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
++       /* Enabling the Second Boot code upon reset */
++       *((volatile unsigned long *)(WDT2_CONTROL_REG)) |= (WDT2_SECOND_BOOT_CODE);
++#else
++       *((volatile unsigned long *)(WDT2_CONTROL_REG)) &= ~(WDT2_SECOND_BOOT_CODE);
++#endif
++       /* Enable back the Watchdog timer to start the Watchdog */
++       /* Also set the Flag to reset the CPU on Timeout */
++       *((volatile unsigned long *)(WDT2_CONTROL_REG)) |= (WDT_RESET_SYSTEM | WDT_ENABLE);
++
++#ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT 
++	if (broken_spi_banks == 1) 
++           return 1;// if bank#0 is broken then dont clear address mapping and bootimage 1 
++       else 
++#endif
++           return (((*wdt_timeout_status) & (WDT_CUR_BOOTSRC_MASK)) >> 1 ) + 1 ;
++}
++
++/**
++* @fn Disable_watchdog
++* @brief Disables watchdog reset.
++* @param[in] void.
++* @retval  0 - on success.
++*/
++int Disable_watchdog(void)
++{
++
++    if(*((volatile unsigned long *)(WDT2_CONTROL_REG)) & (WDT_ENABLE | WDT_RESET_SYSTEM))
++    {
++       printf("Disabling Watchdog 2 Timer\n");
++       *((volatile unsigned long *)(WDT2_CONTROL_REG)) &= ~(WDT_RESET_SYSTEM | WDT_ENABLE);
++    }
++#ifdef CONFIG_SPX_FEATURE_HW_FAILSAFE_BOOT
++	if ((broken_spi_banks == 2) && (*((volatile unsigned long *)(WDT2_TIMEOUT_STAT_REG)) & WDT_CUR_BOOTSRC_MASK))
++		broken_spi_banks = 1;
++#endif
++    return 0;
++}
++
++#endif
+diff -Naur uboot.old/oem/ami/fmh/cmd_fmh.c uboot/oem/ami/fmh/cmd_fmh.c
+--- uboot.old/oem/ami/fmh/cmd_fmh.c	2020-02-18 13:25:48.149891948 -0500
++++ uboot/oem/ami/fmh/cmd_fmh.c	2020-02-18 13:39:21.494853280 -0500
+@@ -711,17 +711,15 @@
+ 
+ int GetBootImage(u8 *imagetoboot)
+ {
+-#if 0
+-	flash_info_t *flinfo;
++	//flash_info_t *flinfo;
+ 	unsigned long i=0,SectorSize=CONFIG_SPX_FEATURE_GLOBAL_ERASE_BLOCK_SIZE;
+ 	unsigned long SectorCount=0,flashsize=0;
+ 	unsigned long watchdog_reset_status = 0;
+-	u8 imgIndex=0,bank=0,img1_presence=0,img2_presence=0;
++	u8 imgIndex=0,img1_presence=0,img2_presence=0;
+ 	FMH	*fmh = NULL;
+ 	MODULE_INFO *mod = NULL;
+ 	VersionInfo firmware_ver[2], platform_ver[2];
+-
+-
++	struct spi_flash *flash;
+ #ifdef CONFIG_SPX_FEATURE_FAIL_SAFE_BOOTING
+ #ifdef CONFIG_SPX_FEATURE_SW_FAILSAFE_BOOT
+     Enable_watchdog(&watchdog_reset_status);
+@@ -731,18 +729,17 @@
+ #endif
+ #endif
+ 
++    flash = spi_flash_probe(CONFIG_ENV_SPI_BUS, CONFIG_ENV_SPI_CS,
++                        CONFIG_ENV_SPI_MAX_HZ, CONFIG_ENV_SPI_MODE);
++    if (flash == NULL)
++    {
++        puts("\nspi_flash_probe failed");
++        hang();
++    }
+ 
+-	for (bank=0;bank<CONFIG_SYS_MAX_FLASH_BANKS;bank++)
+-	{
+-		flinfo = &flash_info[bank];
+-		flashsize += flinfo->size;
+-		if (flinfo->size == 0)
+-			break;
+-	}
+-
+-	SectorCount=flashsize/SectorSize;
+-
+-        memset(&firmware_ver,0,sizeof(firmware_ver));
++	flashsize = flash->size;
++	SectorSize = 0x10000;
++	SectorCount = flashsize/SectorSize;
+         memset(&platform_ver,0,sizeof(platform_ver));
+  
+ 		/* Scan through the flash for FMH */
+@@ -756,7 +753,7 @@
+         	        if( (i*SectorSize) >= CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE ) { break; }
+ 	            #endif
+ 			/* Check if FMH found at this sector */
+-			fmh = ScanforFMH((unsigned char *)(CONFIG_SYS_FLASH_BASE+(i*SectorSize)),SectorSize);
++			fmh = ScanforFMH(flash,(i*SectorSize),SectorSize);
+ 			if (fmh == NULL)
+ 			{
+ 				i++;
+@@ -863,7 +860,6 @@
+ 				#endif
+ 		 	 }
+ 		}
+-#endif
+ return 0;
+ }
+ 
+@@ -1049,6 +1045,14 @@
+ 		return 0;			/* Full Access to Uboot Console */
+ 	}
+ 
++    flash = spi_flash_probe(CONFIG_ENV_SPI_BUS, CONFIG_ENV_SPI_CS,
++                        CONFIG_ENV_SPI_MAX_HZ, CONFIG_ENV_SPI_MODE);
++    if (flash == NULL)
++    {
++        puts("\nspi_flash_probe failed");
++        hang();
++    }
++
+ #ifdef CONFIG_SPX_FEATURE_GLOBAL_DUAL_IMAGE_SUPPORT
+     if( GetBootImage(&imagetoboot) != 0 )
+ 	 return -1;
+@@ -1061,15 +1065,6 @@
+ 
+ 	printf("Image to be booted is %d\n",imagetoboot);
+ 
+-
+-    flash = spi_flash_probe(CONFIG_ENV_SPI_BUS, CONFIG_ENV_SPI_CS,
+-                        CONFIG_ENV_SPI_MAX_HZ, CONFIG_ENV_SPI_MODE);
+-    if (flash == NULL) 
+-    {
+-        puts("\nspi_flash_probe failed");
+-        hang();
+-    }
+-
+     if(imagetoboot == IMAGE_1)
+     {
+         SectorCount = (CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE/SectorSize);
+diff -Naur uboot.old/oem/ami/fmh/fmhcore.c uboot/oem/ami/fmh/fmhcore.c
+--- uboot.old/oem/ami/fmh/fmhcore.c	2020-02-18 13:25:48.137892003 -0500
++++ uboot/oem/ami/fmh/fmhcore.c	2020-02-18 13:39:46.158774333 -0500
+@@ -181,6 +181,7 @@
+ 	FMH *fmh;
+ 	ALT_FMH *altfmh;
+ 	unsigned long FMH_Offset;
++	MODULE_INFO *mod;
+ #if defined CONFIG_SPX_FEATURE_DEDICATED_SPI_FLASH_BANK
+ 	unsigned long StartAddr = (unsigned long)SectorAddr;
+ 	unsigned long SecStartAddr = 0;
+@@ -205,6 +206,8 @@
+ 	fmh = CheckForNormalFMH(fmh);
+ 	if (fmh != NULL)
+ 		return fmh;
++       
++	 mod = &(fmh->Module_Info);
+ 
+ 	/* If Normal FMH is not found, check for alternate FMH */
+ 	//flash_read((ulong)SectorAddr+SectorSize - sizeof(ALT_FMH),sizeof(ALT_FMH),(char *)&altfmh_buffer);
+@@ -222,12 +225,27 @@
+ 	for(i = 0; i < CONFIG_SPX_FEATURE_SECONDARY_IMAGE_SPI; i++)
+ 		SecStartAddr += flash_info[i].size;
+ 
+-	if ((StartAddr - CONFIG_SYS_FLASH_BASE) >= SecStartAddr)
+-		flash_read((ulong)CONFIG_SYS_FLASH_BASE+SecStartAddr+FMH_Offset, sizeof(FMH),(char *)&fmh_buffer);
++       
++	if ((StartAddr - le32_to_host(mod->Module_Location)) >= SecStartAddr)
++	{
++		//flash_read((ulong)CONFIG_SYS_FLASH_BASE+SecStartAddr+FMH_Offset, sizeof(FMH),(char *)&fmh_buffer);
++		ret=spi_flash_read(flash,le32_to_host(mod->Module_Location)+SecStartAddr+FMH_Offset, sizeof(FMH),(void *)&fmh_buffer);
++		if(ret)
++		{
++			puts("Error in reading SPI\n");
++		}
++	}	
+ 	else
+ #elif defined CONFIG_SPX_FEATURE_CONTIGIOUS_SPI_MEMORY
+-	if ((StartAddr - CONFIG_SYS_FLASH_BASE) >= CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE)
+-		flash_read((ulong)CONFIG_SYS_FLASH_BASE+CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE+FMH_Offset, sizeof(FMH), (char *)&fmh_buffer);
++	if ((StartAddr - le32_to_host(mod->Module_Location)) >= CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE)
++	{
++		//flash_read((ulong)CONFIG_SYS_FLASH_BASE+CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE+FMH_Offset, sizeof(FMH), (char *)&fmh_buffer);
++		ret=spi_flash_read(flash,le32_to_host(mod->Module_Location)+CONFIG_SPX_FEATURE_GLOBAL_USED_FLASH_SIZE+FMH_Offset, sizeof(FMH), (void *)&fmh_buffer);
++		if(ret)
++		{
++			puts("Error in reading SPI\n");
++		}
++	}	
+ 	else
+ #endif
+ 
+diff -Naur uboot.old/oem/ami/fmh/hwdef.h uboot/oem/ami/fmh/hwdef.h
+--- uboot.old/oem/ami/fmh/hwdef.h	1969-12-31 19:00:00.000000000 -0500
++++ uboot/oem/ami/fmh/hwdef.h	2020-02-17 20:20:11.000762000 -0500
+@@ -0,0 +1,122 @@
++/*
++ *  This file contains the AST SOC Register definitions
++ *
++ *  Copyright (C) 2005 American Megatrends Inc
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef     _HWDEF_AST_H_
++#define     _HWDEF_AST_H_
++
++
++/* -----------------------------------------------------------------
++ *      	         SRAM Registers
++ * -----------------------------------------------------------------
++ */
++
++
++/*
++ * -------------------------------------------------------------
++ *  					SDRAM Registers
++ * -------------------------------------------------------------
++ */
++
++/*--------------------------------------------------------
++ *  Timer definitions
++ * ------------------------------------------------------
++ */
++/* Timer conrol reg */
++#define TIMER3_INTR_ENABLE 		0x400
++#define TIMER3_CLOCK_SELECT		0x200
++#define TIMER3_ENABLE		    0x100
++#define TIMER2_INTR_ENABLE 		0x040
++#define TIMER2_CLOCK_SELECT		0x020
++#define TIMER2_ENABLE		    0x010
++#define TIMER1_INTR_ENABLE 		0x004
++#define TIMER1_CLOCK_SELECT		0x002
++#define TIMER1_ENABLE		    0x001
++
++/* --------------------------------------------------------
++ *  Interrupt Controllers
++ * --------------------------------------------------------
++ */
++/* Source control reg */
++#define INTR_LOW_LEVEL	0x00
++#define INTR_HIGH_LEVEL	0x40
++#define INTR_NEG_EDGE	0x80
++#define INRR_POS_EDGE	0xC0
++
++
++/*  --------------------------------------------------------------
++ *   I2S Controllers
++ *  --------------------------------------------------------------
++ */
++
++
++/*  --------------------------------------------------------------
++ *   SSP Controllers
++ *  --------------------------------------------------------------
++ */
++
++
++/*  --------------------------------------------------------------
++ *   I2C Controllers
++ *  --------------------------------------------------------------
++ */
++
++
++/*----------------------------------------------------------------
++ *   DMA Controllers
++ *----------------------------------------------------------------
++ */
++
++
++/*----------------------------------------------------------------
++ *   Serial  Controllers
++ *----------------------------------------------------------------
++ */
++#if 0
++#define AST_UART_CLOCK      UART_CLOCK/13	/* defined in board config */
++#define AST_BAUD_115200	    (AST_UART_CLOCK /1843200)
++#define AST_BAUD_57600	    (AST_UART_CLOCK /921600)
++#define AST_BAUD_38400	    (AST_UART_CLOCK /614400)
++#define AST_BAUD_19200	    (AST_UART_CLOCK /307200)
++#define AST_BAUD_14400	    (AST_UART_CLOCK /230400)
++#define AST_BAUD_9600	    (AST_UART_CLOCK /153600)
++#endif
++
++/*----------------------------------------------------------------
++ *   RTC
++ *----------------------------------------------------------------
++ */
++
++
++/*----------------------------------------------------------------
++ *   WDT
++ *----------------------------------------------------------------
++ */
++#define WDT_TIMER_EN		0x01
++#define WDT_RESET_EN		0x02
++
++/*----------------------------------------------------------------
++ *   USB Reference Clock
++ *----------------------------------------------------------------
++ */
++#define AST_PLL_25MHZ                   25000000
++#define AST_PLL_24MHZ                   24000000
++#define AST_PLL_12MHZ                   12000000
++
++#endif
+diff -Naur uboot.old/oem/ami/fmh/hwmap.h uboot/oem/ami/fmh/hwmap.h
+--- uboot.old/oem/ami/fmh/hwmap.h	1969-12-31 19:00:00.000000000 -0500
++++ uboot/oem/ami/fmh/hwmap.h	2020-02-17 20:20:11.000762000 -0500
+@@ -0,0 +1,120 @@
++/*
++ *  This file contains the AST SOC Register Base, IRQ and DMA  mappings
++ *
++ *  Copyright (C) 2005 American Megatrends Inc
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef     _HWREG_AST_H_
++#define     _HWMAP_AST_H_
++
++
++/********************************************************************
++   Internal Register Mapping Actual = 0x16000000 to 0x1E78CFFF
++   After Align the base and size    = 0x16000000 to 0x1EFFFFFF
++*********************************************************************/
++
++#define AST_REGISTER_BASE				0x16000000
++#define AST_REGISTER_SIZE				0x09000000
++
++/*--------------------------- Individual Devices ------------------------- */
++#define AST_SMC_BASE                    0x16000000
++
++#define AST_AHBC_BASE                   0x1E600000
++#define AST_FMC_BASE                    0x1E620000   
++#define AST_SPI_BASE                    0x1E630000   
++#define AST_MIC_BASE                    0x1E640000
++#define AST_MAC1_BASE                   0x1E660000
++#define AST_MAC2_BASE                   0x1E680000
++#define AST_USB20_HUB_BASE              0x1E6A0000
++#define AST_USB20_HOST_BASE             0x1E6A1000
++#define AST_USB11_HOST_BASE             0x1E6B0000
++#define AST_IC_BASE                     0x1E6C0000
++#define AST_SDRAMC_BASE                 0x1E6E0000
++#define AST_USB11_BASE                  0x1E6E1000
++#define AST_SCU_BASE                    0x1E6E2000
++#define AST_ADC_BASE                    0x1E6E9000
++#define AST_LPC_PLUS_BASE               0x1E6EC000
++#define AST_CRT_BASE                    0x1E6E6000
++#define AST_RFX_BASE                    0x1E6EB000
++#define AST_PCIE_BASE                   0x1E6ED000
++#define AST_P2X_BASE                    0x1E6F0000
++#define AST_GPIO_BASE                   0x1E780000
++#define AST_RTC_BASE                    0x1E781000
++#define AST_TIMER_BASE                  0x1E782000
++#define AST_UART1_BASE                  0x1E783000
++#define AST_UART2_BASE                  0x1E784000
++#define AST_WDT_BASE                    0x1E785000
++#define AST_PWM_FAN_BASE                0x1E786000
++#define AST_VUART_BASE                  0x1E787000
++#define AST_PUART_BASE                  0x1E788000
++#define AST_LPC_BASE                    0x1E789000
++#define AST_I2C_BASE                    0x1E78A000
++
++#define AST_PCIE_WIN_BASE               0x70000000
++#define AST_PCIE_WIN_SIZE               0x10000000
++
++/*--------------- Virtual address of the IO Registers Region  ------------*/
++#define AST_REGISTER_VA_BASE            IO_ADDRESS(AST_REGISTER_BASE)
++
++#define AST_SMC_VA_BASE                 IO_ADDRESS(AST_SMC_BASE)
++#define AST_AHBC_VA_BASE                IO_ADDRESS(AST_AHBC_BASE)
++#define AST_FMC_VA_BASE                 IO_ADDRESS(AST_FMC_BASE)  
++#define AST_SPI_VA_BASE                 IO_ADDRESS(AST_SPI_BASE)   
++#define AST_MIC_VA_BASE                 IO_ADDRESS(AST_MIC_BASE)
++#define AST_MAC1_VA_BASE                IO_ADDRESS(AST_MAC1_BASE)
++#define AST_MAC2_VA_BASE                IO_ADDRESS(AST_MAC2_BASE)
++#define AST_USB20_HUB_VA_BASE           IO_ADDRESS(AST_USB20_HUB_BASE)
++#define AST_USB20_HOST_VA_BASE          IO_ADDRESS(AST_USB20_HOST_BASE)
++#define AST_USB11_HOST_VA_BASE          IO_ADDRESS(AST_USB11_HOST_BASE)
++#define AST_IC_VA_BASE                  IO_ADDRESS(AST_IC_BASE)
++#define AST_SDRAMC_VA_BASE              IO_ADDRESS(AST_SDRAMC_BASE)
++#define AST_USB11_VA_BASE               IO_ADDRESS(AST_USB11_BASE)
++#define AST_SCU_VA_BASE                 IO_ADDRESS(AST_SCU_BASE)
++#define AST_ADC_VA_BASE                 IO_ADDRESS(AST_ADC_BASE)
++#define AST_LPC_PLUS_VA_BASE            IO_ADDRESS(AST_LPC_PLUS_BASE)
++#define AST_CRT_VA_BASE                 IO_ADDRESS(AST_CRT_BASE)
++#define AST_RFX_VA_BASE                 IO_ADDRESS(AST_RFX_BASE)
++#define AST_PCIE_VA_BASE                IO_ADDRESS(AST_PCIE_BASE)
++#define AST_P2X_VA_BASE                 IO_ADDRESS(AST_P2X_BASE)
++#define AST_GPIO_VA_BASE                IO_ADDRESS(AST_GPIO_BASE)
++#define AST_RTC_VA_BASE                 IO_ADDRESS(AST_RTC_BASE)
++#define AST_TIMER_VA_BASE               IO_ADDRESS(AST_TIMER_BASE)
++#define AST_UART1_VA_BASE               IO_ADDRESS(AST_UART1_BASE)
++#define AST_UART2_VA_BASE               IO_ADDRESS(AST_UART2_BASE)
++#define AST_WDT_VA_BASE                 IO_ADDRESS(AST_WDT_BASE)
++#define AST_PWM_FAN_VA_BASE             IO_ADDRESS(AST_PWM_FAN_BASE)
++#define AST_VUART_VA_BASE               IO_ADDRESS(AST_VUART_BASE)
++#define AST_PUART_VA_BASE               IO_ADDRESS(AST_PUART_BASE)
++#define AST_LPC_VA_BASE                 IO_ADDRESS(AST_LPC_BASE)
++#define AST_I2C_VA_BASE                 IO_ADDRESS(AST_I2C_BASE)
++
++
++/*****************************************************************
++						    Flash
++*****************************************************************/
++#define CPE_FLASH_BASE                  0x10000000
++#define CPE_FLASH_SZ                    0x00800000		/* Max 16 MB */
++#define CPE_FLASH_VA_BASE               MEM_ADDRESS(CPE_FLASH_BASE)
++
++
++/*****************************************************************
++					  IRQ Assignment
++*****************************************************************/
++#define NR_IRQS							32
++#define MAXIRQNUM                       31
++
++#endif
+diff -Naur uboot.old/oem/ami/fmh/hwreg.h uboot/oem/ami/fmh/hwreg.h
+--- uboot.old/oem/ami/fmh/hwreg.h	1969-12-31 19:00:00.000000000 -0500
++++ uboot/oem/ami/fmh/hwreg.h	2020-02-17 20:20:11.000762000 -0500
+@@ -0,0 +1,218 @@
++/*
++ *  This file contains the AST SOC Register locations
++ *
++ *  Copyright (C) 2005 American Megatrends Inc
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ */
++
++#ifndef     _HWREG_AST_H_
++#define     _HWREG_AST_H_
++
++
++/* -----------------------------------------------------------------
++ *                  SMC Registers
++ * -----------------------------------------------------------------
++*/
++#define SMC_CE0_SEGMENT_AC_TIMING_REG   (AST_SMC_VA_BASE + 0x00)
++#define SMC_CE0_CTRL_REG                (AST_SMC_VA_BASE + 0x04)
++#define SMC_CE1_CTRL_REG                (AST_SMC_VA_BASE + 0x08)
++#define SMC_CE2_CTRL_REG                (AST_SMC_VA_BASE + 0x0C)
++
++/* -----------------------------------------------------------------
++ *                  AHB Registers
++ * -----------------------------------------------------------------
++*/
++#define AHB_PROTECTION_KEY_REG          (AST_AHBC_VA_BASE + 0x00)
++#define AHB_PRIORITY_CTRL_REG           (AST_AHBC_VA_BASE + 0x80)
++#define AHB_INTERRUPT_CTRL_REG          (AST_AHBC_VA_BASE + 0x88)
++#define AHB_ADDR_REMAP_REG              (AST_AHBC_VA_BASE + 0x8C)
++
++/* -----------------------------------------------------------------
++ *                 SRAM Registers
++ * -----------------------------------------------------------------
++ */
++
++ /* -------------------------------------------------------------
++ *                  SDRAM Registers
++ * -------------------------------------------------------------
++ */
++#define SDRAM_PROTECTION_KEY_REG            (AST_SDRAMC_VA_BASE + 0x00)
++#define SDRAM_CONFIG_REG                    (AST_SDRAMC_VA_BASE + 0x04)
++#define SDRAM_GRAP_MEM_PROTECTION_REG       (AST_SDRAMC_VA_BASE + 0x08)
++#define SDRAM_REFRESH_TIMING_REG            (AST_SDRAMC_VA_BASE + 0x0C)
++#define SDRAM_NSPEED_REG1                   (AST_SDRAMC_VA_BASE + 0x10)
++#define SDRAM_LSPEED_REG1                   (AST_SDRAMC_VA_BASE + 0x14)
++#define SDRAM_NSPEED_REG2                   (AST_SDRAMC_VA_BASE + 0x18)
++#define SDRAM_LSPEED_REG2                   (AST_SDRAMC_VA_BASE + 0x1C)
++#define SDRAM_NSPEED_DELAY_CTRL_REG         (AST_SDRAMC_VA_BASE + 0x20)
++#define SDRAM_LSPEED_DELAY_CTRL_REG         (AST_SDRAMC_VA_BASE + 0x24)
++#define SDRAM_MODE_SET_CTRL_REG             (AST_SDRAMC_VA_BASE + 0x28)
++#define SDRAM_MRS_EMRS2_MODE_SET_REG        (AST_SDRAMC_VA_BASE + 0x2C)
++#define SDRAM_MRS_EMRS3_MODE_SET_REG        (AST_SDRAMC_VA_BASE + 0x30)
++#define SDRAM_PWR_CTRL_REG                  (AST_SDRAMC_VA_BASE + 0x34)
++#define SDRAM_PAGE_MISS_LATENCY_MASK_REG    (AST_SDRAMC_VA_BASE + 0x38)
++#define SDRAM_PRIORITY_GROUP_SET_REG        (AST_SDRAMC_VA_BASE + 0x3C)
++#define SDRAM_MAX_GRANT_LENGTH_REG1         (AST_SDRAMC_VA_BASE + 0x40)
++#define SDRAM_MAX_GRANT_LENGTH_REG2         (AST_SDRAMC_VA_BASE + 0x44)
++#define SDRAM_MAX_GRANT_LENGTH_REG3         (AST_SDRAMC_VA_BASE + 0x48)
++#define SDRAM_ECC_CTRL_STATUS_REG           (AST_SDRAMC_VA_BASE + 0x50)
++#define SDRAM_ECC_SEGMENT_EN_REG            (AST_SDRAMC_VA_BASE + 0x54)
++#define SDRAM_ECC_SCRUB_REQ_MASK_CTRL_REG   (AST_SDRAMC_VA_BASE + 0x58)
++#define SDRAM_ECC_ADDR_FIRST_ERR_REG        (AST_SDRAMC_VA_BASE + 0x5C)
++#define SDRAM_IO_BUFF_MODE_REG              (AST_SDRAMC_VA_BASE + 0x60)
++#define SDRAM_DLL_CTRL_REG1                 (AST_SDRAMC_VA_BASE + 0x64)
++#define SDRAM_DLL_CTRL_REG2                 (AST_SDRAMC_VA_BASE + 0x68)
++#define SDRAM_DLL_CTRL_REG3                 (AST_SDRAMC_VA_BASE + 0x6C)
++#define SDRAM_TEST_CTRL_STATUS_REG          (AST_SDRAMC_VA_BASE + 0x70)
++#define SDRAM_TEST_START_ADDR_LENGTH_REG    (AST_SDRAMC_VA_BASE + 0x74)
++#define SDRAM_TEST_FAIL_DQ_BIT_REG          (AST_SDRAMC_VA_BASE + 0x78)
++#define SDRAM_TEST_INIT_VALUE_REG           (AST_SDRAMC_VA_BASE + 0x7C)
++#define AST2100_COMPATIBLE_SCU_PASSWORD     (AST_SDRAMC_VA_BASE + 0x100)
++#define AST2100_COMPATIBLE_SCU_MPLL_PARA    (AST_SDRAMC_VA_BASE + 0x120)
++
++/*-------------------------------------------------------------------
++ *                 SCU Registers
++ *--------------------------------------------------------------------
++ */
++#define SCU_KEY_CONTROL_REG                (AST_SCU_VA_BASE +  0x00)
++#define SCU_SYS_RESET_REG               (AST_SCU_VA_BASE +  0x04)
++#define SCU_CLK_SELECT_REG              (AST_SCU_VA_BASE +  0x08)
++#define SCU_CLK_STOP_REG                (AST_SCU_VA_BASE +  0x0C)
++#define SCU_OSC_COUNT_CTRL_REG         (AST_SCU_VA_BASE +  0x10)
++#define SCU_OSC_COUNT_VALUE_REG         (AST_SCU_VA_BASE +  0x14)
++#define SCU_INTR_CRTL_VALUE_REG         (AST_SCU_VA_BASE +  0x18)
++#define SCU_D2PLL_PARAM_REG             (AST_SCU_VA_BASE +  0x1C)//AST2500A1
++#define SCU_32CLK_ERR_CORRECT_REG       (AST_SCU_VA_BASE +  0x1C)
++#define SCU_M_PLL_PARAM_REG             (AST_SCU_VA_BASE +  0x20)
++#define SCU_H_PLL_PARAM_REG             (AST_SCU_VA_BASE +  0x24)
++#define SCU_MISC_CONTROL_REG            (AST_SCU_VA_BASE +  0x2C)
++#define SCU_MISC_MULTI_PIN3_REG  	(AST_SCU_VA_BASE +  0x88)
++#define SCU_MISC_MULTI_PIN5_REG		    (AST_SCU_VA_BASE +  0x90)
++
++#define SCU_SOC_SCRATCH1_REG            (AST_SCU_VA_BASE +  0x40)
++#define SCU_SOC_SCRATCH2_REG            (AST_SCU_VA_BASE +  0x44)
++#define SCU_MAC_CLOCK_DELAY             (AST_SCU_VA_BASE +  0x48)
++#define SCU_HW_STRAPPING_REG            (AST_SCU_VA_BASE +  0x70)
++#define SCU_PIN_MUX                     (AST_SCU_VA_BASE +  0x74)
++#define SCU_REVISION_ID                 (AST_SCU_VA_BASE +  0x7C)
++#define SCU_F0_REG                      (AST_SCU_VA_BASE +  0xf0)
++#define SCU_MAC_CLK_DELAY_100M          (AST_SCU_VA_BASE +  0xB8)
++#define SCU_MAC_CLK_DELAY_10M           (AST_SCU_VA_BASE +  0xBC)
++#define SCU_SYS_RESET_CTL_REG2          (AST_SCU_VA_BASE +  0xD4)
++#define SCU_D2PLL_EXTENDED_REG          (AST_SCU_VA_BASE +  0x13C)
++
++/* -------------------------------------------------------------------
++ *                     Timer Registers
++ * -------------------------------------------------------------------
++ */
++#define TIMER1_COUNT_REG                (AST_TIMER_VA_BASE + 0x00)
++#define TIMER1_RELOAD_REG               (AST_TIMER_VA_BASE + 0x04)
++#define TIMER1_FIRST_MATCH_REG          (AST_TIMER_VA_BASE + 0x08)
++#define TIMER1_SEC_MATCH_REG            (AST_TIMER_VA_BASE + 0x0C)
++
++#define TIMER2_COUNT_REG                (AST_TIMER_VA_BASE + 0x10)
++#define TIMER2_RELOAD_REG               (AST_TIMER_VA_BASE + 0x14)
++#define TIMER2_FIRST_MATCH_REG          (AST_TIMER_VA_BASE + 0x18)
++#define TIMER2_SEC_MATCH_REG            (AST_TIMER_VA_BASE + 0x1C)
++
++#define TIMER3_COUNT_REG                (AST_TIMER_VA_BASE + 0x20)
++#define TIMER3_RELOAD_REG               (AST_TIMER_VA_BASE + 0x24)
++#define TIMER3_FIRST_MATCH_REG          (AST_TIMER_VA_BASE + 0x28)
++#define TIMER3_SEC_MATCH_REG            (AST_TIMER_VA_BASE + 0x2C)
++
++#define TIMER_CONTROL_REG               (AST_TIMER_VA_BASE + 0x30)
++
++/* --------------------------------------------------------------------
++ *                         GPIO Registers
++ * --------------------------------------------------------------------
++ */
++#define SIMPLE_GPIO0_DATA_VAL_REG       (AST_GPIO_VA_BASE + 0x70)
++#define EXT_GPIO_CMD_SRC_0_REG		(AST_GPIO_VA_BASE + 0x68)
++#define EXT_GPIO_CMD_SRC_1_REG		(AST_GPIO_VA_BASE + 0x6c)
++#define EXT_GPIO_DATA_REG		(AST_GPIO_VA_BASE + 0x20)
++#define EXT_GPIO_DIR_REG		(AST_GPIO_VA_BASE + 0x24)
++#define GPIO_DATA_REG			(AST_GPIO_VA_BASE + 0x0)
++#define GPIO_DIR_REG			(AST_GPIO_VA_BASE + 0x4)
++
++
++/* -----------------------------------------------------------------
++ *                  Interrupt Controller Register
++ * -----------------------------------------------------------------
++ */
++#define IRQ_STATUS_REG                 (AST_IC_VA_BASE + 0x00)
++#define FIQ_STATUS_REG                 (AST_IC_VA_BASE + 0x04)
++#define RAW_INT_STATUS_REG             (AST_IC_VA_BASE + 0x08)
++#define IRQ_SELECT_REG                 (AST_IC_VA_BASE + 0x0C)
++#define IRQ_ENABLE_REG                 (AST_IC_VA_BASE + 0x10)
++#define IRQ_CLEAR_REG                  (AST_IC_VA_BASE + 0x14)
++#define SOFT_INT_REG                   (AST_IC_VA_BASE + 0x18)
++#define SOFT_INT_CLEAR_REG             (AST_IC_VA_BASE + 0x1C)
++#define PROTECT_ENABLE_REG             (AST_IC_VA_BASE + 0x20)
++
++/*-------------------------------------------------------------
++ *               SSP Controllers Registers
++ *  -----------------------------------------------------------
++ */
++
++
++/*---------------------------------------------------------------
++ *   I2C Controllers Register
++ *  ------------------------------------------------------------
++ */
++
++/*------------------------------------------------------------------
++ *   DMA Controllers Registers
++ *  ----------------------------------------------------------------
++ */
++
++/*------------------------------------------------------------------
++ *              RTC Register Locations
++ *------------------------------------------------------------------*/
++
++
++/*------------------------------------------------------------------
++ *              WDT Register Locations
++ *------------------------------------------------------------------*/
++#define WDT_CNT_STATUS_REG  (AST_WDT_VA_BASE + 0x00)
++#define WDT_RELOAD_REG     (AST_WDT_VA_BASE + 0x04)
++#define WDT_CNT_RESTART_REG (AST_WDT_VA_BASE + 0x08)
++#define WDT_CONTROL_REG        (AST_WDT_VA_BASE + 0x0C)
++#define WDT_TIMEOUT_STAT_REG (AST_WDT_VA_BASE + 0x10)
++#define WDT_CLR_TIMEOUT_STAT_REG (AST_WDT_VA_BASE + 0x14)
++#define WDT2_CNT_STATUS_REG  (AST_WDT_VA_BASE + 0x20)
++#define WDT2_RELOAD_REG          (AST_WDT_VA_BASE + 0x24)
++#define WDT2_CNT_RESTART_REG (AST_WDT_VA_BASE + 0x28)
++#define WDT2_CONTROL_REG         (AST_WDT_VA_BASE + 0x2C)
++
++#define WDT2_TIMEOUT_STAT_REG      (AST_WDT_VA_BASE + 0x30)
++#define WDT2_CLR_TIMEOUT_STAT_REG  (AST_WDT_VA_BASE + 0x34)
++
++/*------------------------------------------------------------------
++ *              LPC PLUS Controllers Register Locations
++ *------------------------------------------------------------------*/
++#define LPC_PLUS_CALIBRATION_DATA   (AST_LPC_PLUS_VA_BASE + 0x04)
++
++
++/*------------------------------------------------------------------
++ *              LPC Controllers Register Locations
++ *------------------------------------------------------------------*/
++#define LPC_HOST_CNT_REG0	        (AST_LPC_VA_BASE + 0xa0)
++#define LPC_SNP_WADR			(AST_LPC_VA_BASE + 0x90)
++#define LPC_SNP_WDR			(AST_LPC_VA_BASE + 0x94)
++#define LPC_HICR5			(AST_LPC_VA_BASE + 0x80)
++
++
++#endif
+diff -Naur uboot.old/oem/ami/fmh/Makefile uboot/oem/ami/fmh/Makefile
+--- uboot.old/oem/ami/fmh/Makefile	2020-02-18 13:25:48.137892003 -0500
++++ uboot/oem/ami/fmh/Makefile	2020-02-18 13:29:36.920913191 -0500
+@@ -18,7 +18,7 @@
+ # # MA 02111-1307 USA
+ # #
+ 
+-obj-y                           += cmd_fmh.o fmhcore.o bootargs.o
++obj-y                           += cmd_fmh.o fmhcore.o bootargs.o ast_wdt.o
+ 
+ ifdef CONFIG_SPX_FEATURE_SECURE_BOOT_SUPPORT
+ obj-y                           += hrotcore.o
+diff -Naur uboot.old/oem/ami/fmh/soc_hw.h uboot/oem/ami/fmh/soc_hw.h
+--- uboot.old/oem/ami/fmh/soc_hw.h	1969-12-31 19:00:00.000000000 -0500
++++ uboot/oem/ami/fmh/soc_hw.h	2020-02-17 20:20:11.000762000 -0500
+@@ -0,0 +1 @@
++#include "ast_hw.h"

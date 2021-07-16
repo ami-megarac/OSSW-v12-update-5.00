@@ -1,0 +1,15 @@
+diff -Naur uboot.old/oem/ami/fmh/ast_wdt.c uboot/oem/ami/fmh/ast_wdt.c
+--- uboot.old/oem/ami/fmh/ast_wdt.c	2020-03-29 20:35:40.185950479 +0000
++++ uboot/oem/ami/fmh/ast_wdt.c	2020-03-29 20:38:24.797619727 +0000
+@@ -20,9 +20,9 @@
+ 
+ #define WDT_ENABLE              0x01
+ #ifdef  CONFIG_SPX_FEATURE_SECURE_BOOT_SUPPORT
+-#define WDT_TIMEOUT             0x1C9C3800 //11E1A300  // 8 Minutes (480 secs * 1MHz) 
++#define WDT_TIMEOUT             0x23C34600 //0x1C9C3800 //11E1A300  // 10 Minutes (600 secs * 1MHz) 
+ #else
+-#define WDT_TIMEOUT             0x1908B100 //11E1A300  // 7 Minutes (420 secs * 1MHz)
++#define WDT_TIMEOUT             0x23C34600 //0x1908B100 //11E1A300  // 10 Minutes (600 secs * 1MHz)
+ #endif
+ #define WDT_TRIGGER             0x00004755              // Trigger Passcode
+ #define WDT_CLOCK               0x10                    // 1MHz Clock for WDT

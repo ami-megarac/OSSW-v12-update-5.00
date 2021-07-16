@@ -1,0 +1,20 @@
+diff -Naur uboot/drivers/net/phy/phy.c uboot_new/drivers/net/phy/phy.c
+--- uboot/drivers/net/phy/phy.c	2020-06-03 15:33:53.253731195 +0800
++++ uboot_new/drivers/net/phy/phy.c	2020-06-03 15:33:37.294591441 +0800
+@@ -714,9 +714,13 @@
+ 			return phy_device_create(bus, addr, phy_id, is_c45,
+ 						 interface);
+ 		}
+-		phy_mask &= ~(1 << addr);
+-	}
+-	return NULL;
++		phy_mask &= ~(1 << addr);
++	}	
++	//printf("Can't find PHY, enable it for NCSI usage\n");
++	is_c45 = (devad == MDIO_DEVAD_NONE) ? false : true;
++	return phy_device_create(bus, 0, phy_id, is_c45,
++				 interface);
++	//return NULL;
+ }
+ 
+ static struct phy_device *search_for_existing_phy(struct mii_dev *bus,

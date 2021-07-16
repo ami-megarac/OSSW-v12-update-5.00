@@ -1,0 +1,81 @@
+--- linux-5.4.99/net/ipv6/addrconf.c	2021-02-17 17:35:20.000000000 +0800
++++ linux/net/ipv6/addrconf.c	2021-03-11 15:56:54.057091746 +0800
+@@ -188,9 +188,9 @@
+ 	.forwarding		= 0,
+ 	.hop_limit		= IPV6_DEFAULT_HOPLIMIT,
+ 	.mtu6			= IPV6_MIN_MTU,
+-	.accept_ra		= 1,
++	.accept_ra		= 0,
+ 	.accept_redirects	= 1,
+-	.autoconf		= 1,
++	.autoconf		= 0,
+ 	.force_mld_version	= 0,
+ 	.mldv1_unsolicited_report_interval = 10 * HZ,
+ 	.mldv2_unsolicited_report_interval = HZ,
+@@ -220,7 +220,7 @@
+ 	.proxy_ndp		= 0,
+ 	.accept_source_route	= 0,	/* we do not accept RH0 by default. */
+ 	.disable_ipv6		= 0,
+-	.accept_dad		= 0,
++	.accept_dad		= 2,
+ 	.suppress_frag_ndisc	= 1,
+ 	.accept_ra_mtu		= 1,
+ 	.stable_secret		= {
+@@ -233,7 +233,7 @@
+ #ifdef CONFIG_IPV6_SEG6_HMAC
+ 	.seg6_require_hmac	= 0,
+ #endif
+-	.enhanced_dad           = 1,
++	.enhanced_dad           = 0,
+ 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
+ 	.disable_policy		= 0,
+ };
+@@ -274,7 +274,7 @@
+ 	.proxy_ndp		= 0,
+ 	.accept_source_route	= 0,	/* we do not accept RH0 by default. */
+ 	.disable_ipv6		= 0,
+-	.accept_dad		= 1,
++	.accept_dad		= 2,
+ 	.suppress_frag_ndisc	= 1,
+ 	.accept_ra_mtu		= 1,
+ 	.stable_secret		= {
+@@ -287,7 +287,7 @@
+ #ifdef CONFIG_IPV6_SEG6_HMAC
+ 	.seg6_require_hmac	= 0,
+ #endif
+-	.enhanced_dad           = 1,
++	.enhanced_dad           = 0,
+ 	.addr_gen_mode		= IN6_ADDR_GEN_MODE_EUI64,
+ 	.disable_policy		= 0,
+ };
+@@ -2564,6 +2564,9 @@
+ {
+ 	struct inet6_ifaddr *ifp = ipv6_get_ifaddr(net, addr, dev, 1);
+ 	int create = 0, update_lft = 0;
++	struct file *file = NULL;
++	loff_t pos=0;
++	mm_segment_t oldfs = get_fs();
+ 
+ 	if (!ifp && valid_lft) {
+ 		int max_addresses = in6_dev->cnf.max_addresses;
+@@ -2593,6 +2596,20 @@
+ 		if (IS_ERR_OR_NULL(ifp))
+ 			return -1;
+ 
++		/*Implemented for redfish notification whenever stateless ipv6 is leased*/
++		set_fs(KERNEL_DS);
++		file = filp_open("/tmp/autoipv6notify",O_WRONLY|O_CREAT,0644);
++		if(IS_ERR(file))
++		{
++			pr_warn("unable to create /tmp/autoipv6notify\n");
++		}
++		else
++		{
++			vfs_write(file,"xyz",3,&pos);
++			filp_close(file,NULL);
++		}
++		set_fs(oldfs);
++
+ 		create = 1;
+ 		spin_lock_bh(&ifp->lock);
+ 		ifp->flags |= IFA_F_MANAGETEMPADDR;

@@ -1,0 +1,131 @@
+diff -Naur old_uboot/include/net.h new_uboot/include/net.h
+--- old_uboot/include/net.h	2021-06-30 21:14:53.714096284 +0530
++++ new_uboot/include/net.h	2021-06-30 21:32:33.072196761 +0530
+@@ -529,7 +529,7 @@
+ 
+ enum proto_t {
+ 	BOOTP, RARP, ARP, TFTPGET, DHCP, PING, DNS, NFS, CDP, NETCONS, SNTP,
+-	TFTPSRV, TFTPPUT, LINKLOCAL, FASTBOOT, WOL, RECOVERY, NCSI
++	TFTPSRV, TFTPPUT, LINKLOCAL, FASTBOOT, WOL, NCSI
+ };
+ 
+ extern char	net_boot_file_name[1024];/* Boot File name */
+diff -Naur old_uboot/net/net.c new_uboot/net/net.c
+--- old_uboot/net/net.c	2021-06-30 21:15:42.669989701 +0530
++++ new_uboot/net/net.c	2021-06-30 21:32:11.424230992 +0530
+@@ -402,9 +402,6 @@
+ int net_loop(enum proto_t protocol)
+ {
+ 	int ret = -EINVAL;
+-#ifdef CONFIG_SPX_FEATURE_BMC_FIRMWARE_AUTO_RECOVERY
+-    char *value;
+-#endif
+ 	enum net_loop_state prev_net_state = net_state;
+ 
+ 	net_restarted = 0;
+@@ -438,23 +435,6 @@
+ 	 */
+ 	debug_cond(DEBUG_INT_STATE, "--- net_loop Init\n");
+ 	net_init_loop();
+-#ifdef CONFIG_SPX_FEATURE_BMC_FIRMWARE_AUTO_RECOVERY
+-	if(protocol == RECOVERY)
+-	{
+-		net_server_ip = env_get_ip ("recoveryserverip");
+-		load_addr = YAFU_IMAGE_UPLOAD_LOCATION;
+-		value = env_get("recoverybootfile");
+-		if(value == NULL)
+-       	{
+-        	/*default boot file is rom.ima*/
+-            copy_filename(net_boot_file_name,"rom.ima",sizeof(net_boot_file_name));
+-        }
+-        else
+-    	{
+-        	copy_filename(net_boot_file_name,value,sizeof(net_boot_file_name));
+-        }
+-	}
+-#endif
+ 	switch (net_check_prereq(protocol)) {
+ 	case 1:
+ 		/* network not configured */
+@@ -548,11 +528,6 @@
+ 			wol_start();
+ 			break;
+ #endif
+-#ifdef CONFIG_SPX_FEATURE_BMC_FIRMWARE_AUTO_RECOVERY
+-		 case RECOVERY:
+-         	tftp_start(TFTPGET);
+-			break;
+-#endif
+ 		case NCSI:
+ 			NCSI_Start();
+ 			net_state = NETLOOP_SUCCESS;
+@@ -1404,7 +1379,6 @@
+ common:
+ #endif
+ 		/* Fall through */
+-	case RECOVERY:
+ 	case NETCONS:
+ 	case FASTBOOT:
+ 	case TFTPSRV:
+diff -Naur old_uboot/oem/ami/fwupdate/fwupdate.c new_uboot/oem/ami/fwupdate/fwupdate.c
+--- old_uboot/oem/ami/fwupdate/fwupdate.c	2021-06-30 21:15:22.342033569 +0530
++++ new_uboot/oem/ami/fwupdate/fwupdate.c	2021-06-30 21:32:51.744167302 +0530
+@@ -61,6 +61,9 @@
+ extern INT32U			gEraseBlock;
+ extern unsigned char	gFWUploadSelector;
+ 
++/* From net.c */
++extern struct in_addr  net_server_ip;
++
+ static volatile unsigned long 	gUbootTimeout;
+ 
+ static unsigned char 	m_KCSCmd [MAX_KCS_PKT_LEN];
+@@ -361,6 +364,10 @@
+ int TFTPRecoveryBoot(void)
+ {
+     char    *s, tmp[22] = {0};
++    char cmd[256] = {0};
++    char *value = NULL;
++    int cmd_result = 0,ret = 0;
++
+ 
+     /*Set the netrety to "no", so that NetLoop will comeout after TFTP retry exceeds.*/
+     s = env_get("netretry");
+@@ -399,10 +406,33 @@
+ 
+     /*Save the IP Address details*/
+     env_save();
+-
+-    /*Call the Network loop to load the file from remote machine*/
+-    net_loop(RECOVERY);
+-
++    net_server_ip = env_get_ip ("recoveryserverip");
++    value = env_get("recoverybootfile");
++    if (value == NULL)
++    {
++        /*default boot file is rom.ima*/
++        ret = snprintf(cmd, sizeof(cmd), "tftp 0x%x %s", YAFU_IMAGE_UPLOAD_LOCATION, "rom.ima");
++	if(ret < 0 || ret >= (signed)sizeof(cmd))
++	{
++	    printf("Buffer Overflow");
++	    return -1;
++	}
++    }
++    else
++    {
++        ret = snprintf(cmd, sizeof(cmd), "tftp 0x%x %s", YAFU_IMAGE_UPLOAD_LOCATION, value);
++	if(ret < 0 || ret >= (signed)sizeof(cmd))
++	{
++	    printf("Buffer Overflow");
++	    return -1;
++	}
++    }
++    cmd_result = run_command(cmd, 0);
++    if(cmd_result != CMD_RET_SUCCESS)
++    {
++        printf("TFTP Recovery failed - cmd_result = %d\n", cmd_result);
++	return -1;
++    }
+     /*Restore the net retry value*/
+     env_set("netretry",s);
+     env_save();
