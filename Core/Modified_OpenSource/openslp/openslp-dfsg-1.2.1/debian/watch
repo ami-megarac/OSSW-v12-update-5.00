@@ -1,0 +1,3 @@
+version=3
+opts="uversionmangle=s/\.beta/~beta/;s/\.a/~alpha/" \
+http://sf.net/openslp/openslp-(\d\S*)\.(?:tar\.(?:gz|bz2|xz))

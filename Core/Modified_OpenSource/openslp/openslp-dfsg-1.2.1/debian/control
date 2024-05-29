@@ -1,0 +1,86 @@
+Source: openslp-dfsg
+Section: net
+Priority: extra
+Maintainer: Debian QA Group <packages@qa.debian.org>
+Build-Depends: debhelper (>= 9), autotools-dev, dh-autoreconf
+Standards-Version: 3.9.5
+Homepage: http://www.openslp.org/
+
+Package: libslp1
+Section: libs
+Priority: optional
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends}, ${shlibs:Depends}, debconf | debconf-2.0
+Suggests: slpd (= ${binary:Version}), openslp-doc (= ${binary:Version})
+Description: OpenSLP shared library
+ Service Location Protocol is an IETF standard protocol that is used to
+ discover/advertise services on the network. You can use SLP for anything
+ from locating a suitable printer on your floor to discovering what LDAP
+ directories are available in your organization.
+ .
+ This package provides the OpenSLP run-time library package that is linked
+ to SLP aware applications. This library implements RFC 2614 - An API for
+ Service Location. Unless there is a SLP DA in the network, you must install
+ the slpd package to be able to advertise the services.
+
+Package: libslp-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends}, libslp1 (= ${binary:Version}), libc6-dev
+Suggests: openslp-doc (= ${binary:Version})
+Conflicts: libxdelta3-dev
+Description: OpenSLP development files
+ Service Location Protocol is an IETF standard protocol that is used to
+ discover/advertise services on the network. You can use SLP for anything
+ from locating a suitable printer on your floor to discovering what LDAP
+ directories are available in your organization.
+ .
+ This package allows development of SLP applications using the OpenSLP
+ libraries. It includes headers, libraries and links to allow static and
+ dynamic linking. It also includes slptool, a utility to test service
+ advertisement/lookup. The library implements RFC 2614 - An API for
+ Service Location.
+
+Package: slpd
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Suggests: openslp-doc (= ${binary:Version})
+Description: OpenSLP server (slpd)
+ Service Location Protocol is an IETF standard protocol that is used to
+ discover/advertise services on the network. You can use SLP for anything
+ from locating a suitable printer on your floor to discovering what LDAP
+ directories are available in your organization.
+ .
+ This package provides slpd, the OpenSLP daemon, which provides an
+ SLPv2 (RFC 2608) compliant Service Agent and Directory Agent.
+
+Package: slptool
+Section: utils
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, libslp1 (= ${binary:Version}), ${shlibs:Depends}
+Suggests: openslp-doc (= ${binary:Version})
+Description: OpenSLP command line tool
+ Service Location Protocol is an IETF standard protocol that is used to
+ discover/advertise services on the network. You can use SLP for anything
+ from locating a suitable printer on your floor to discovering what LDAP
+ directories are available in your organization.
+ .
+ This package contains a utility which you can use to exercise/test SLP.
+
+Package: openslp-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}
+Description: OpenSLP documentation
+ Service Location Protocol is an IETF standard protocol that is used to
+ discover/advertise services on the network. You can use SLP for anything
+ from locating a suitable printer on your floor to discovering what LDAP
+ directories are available in your organization.
+ .
+ This package provides comprehensive documentation on SLP and the OpenSLP
+ implementation; it contains an Introduction to SLP, a User's Guide, a
+ Programmer's Guide and related RFCs.

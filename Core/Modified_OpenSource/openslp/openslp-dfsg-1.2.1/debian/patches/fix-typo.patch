@@ -1,0 +1,20 @@
+Description: Fix typo in slptool command output
+Author: Guillem Jover <guillem@debian.org>
+Origin: vendor
+Last-Update: 2014-07-25
+
+---
+ slpd/slpd_cmdline.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/slpd/slpd_cmdline.c
++++ b/slpd/slpd_cmdline.c
+@@ -219,7 +219,7 @@ int SLPDParseCommandLine(int argc,char*
+                    "disabled"
+ #endif /* ENABLE_PREDICATES */
+                    "\n"
+-                   "   slpv1 compatability:  "
++                   "   slpv1 compatibility:  "
+ #ifdef ENABLE_SLPv1
+                    "enabled"
+ #else
